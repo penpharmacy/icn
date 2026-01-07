@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>แบบประเมินการทำความสะอาดมือ – รพ.พุนพิน</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body { font-family: Tahoma, sans-serif; margin: 20px; background:#f6f8fa }
+    h1,h2,h3 { color:#0b5ed7 }
+    .box { background:#fff; padding:15px; border-radius:8px; margin-bottom:20px; box-shadow:0 2px 6px rgba(0,0,0,.1)}
+    label { margin-right:15px }
+    table { border-collapse: collapse; width:100%; margin-top:10px }
+    th,td { border:1px solid #ccc; padding:6px; text-align:center }
+    th { background:#e9ecef }
+    button { padding:10px 20px; font-size:16px; background:#0b5ed7; color:#fff; border:none; border-radius:6px; cursor:pointer }
+    button:hover { background:#084298 }
+    .result { background:#e7f1ff; padding:10px; border-radius:6px; margin-top:10px }
+  </style>
+</head>
+<body>
+
+<h1>แบบประเมินการทำความสะอาดมือ<br>บุคลากรโรงพยาบาลพุนพิน</h1>
+
+<div class="box">
+<h2>1. ข้อมูลทั่วไป</h2>
+<p>
+<b>1.1 หอผู้ป่วย:</b>
+<label><input type="radio" name="ward" value="OPD"> OPD</label>
+<label><input type="radio" name="ward" value="IPD"> IPD</label>
+<label><input type="radio" name="ward" value="LR"> LR</label>
+<label><input type="radio" name="ward" value="ER"> ER</label>
+<label><input type="radio" name="ward" value="อื่นๆ"> อื่นๆ</label>
+</p>
+<p>
+<b>1.2 วันที่:</b> <input type="date" id="date"> 
+<b>เวลา:</b> <input type="time" id="time">
+</p>
+</div>
+
+<div class="box">
+<h2>2. ความพร้อมใช้ของอุปกรณ์สนับสนุนการล้างมือ</h2>
+<p>2.1 อ่างล้างมือ: <label><input type="radio" name="sink" value="มี">มี</label> <label><input type="radio" name="sink" value="ไม่มี">ไม่มี</label></p>
+<p>2.2 น้ำยาล้างมือ:</p>
+<ul>
+<li>สบู่เหลว: <label><input type="radio" name="soap" value="มี">มี</label> <label><input type="radio" name="soap" value="ไม่มี">ไม่มี</label></li>
+<li>4% Chlorhexidine: <label><input type="radio" name="chx" value="มี">มี</label> <label><input type="radio" name="chx" value="ไม่มี">ไม่มี</label></li>
+<li>Alcohol hand rub: <label><input type="radio" name="ahr" value="มี">มี</label> <label><input type="radio" name="ahr" value="ไม่มี">ไม่มี</label></li>
+</ul>
+<p>2.3 กระดาษเช็ดมือ: <label><input type="radio" name="paper" value="มี">มี</label> <label><input type="radio" name="paper" value="ไม่มี">ไม่มี</label></p>
+<p>2.4 โปสเตอร์แสดงวิธีการล้างมือ: <label><input type="radio" name="poster" value="มี">มี</label> <label><input type="radio" name="poster" value="ไม่มี">ไม่มี</label></p>
+<p>2.5 ถังขยะใส่กระดาษเช็ดมือ: <label><input type="radio" name="bin" value="มี">มี</label> <label><input type="radio" name="bin" value="ไม่มี">ไม่มี</label></p>
+</div>
+
+<div class="box">
+<h2>3. การสังเกตพฤติกรรมการทำความสะอาดมือ</h2>
+<p><b>ตำแหน่งวิชาชีพ:</b>
+<label><input type="radio" name="job" value="แพทย์">แพทย์</label>
+<label><input type="radio" name="job" value="พยาบาล">พยาบาล</label>
+<label><input type="radio" name="job" value="ผู้ช่วย">ผู้ช่วยเหลือคนไข้</label>
+<label><input type="radio" name="job" value="นศ.พยาบาล">นักศึกษาพยาบาล</label>
+<label><input type="radio" name="job" value="อื่นๆ">อื่นๆ</label>
+</p>
+
+<table>
+<tr><th>ข้อบ่งชี้</th><th>HW</th><th>HR</th><th>ไม่ล้าง</th><th>ใส่ถุงมือ</th></tr>
+<tr><td>1. ก่อนสัมผัสผู้ป่วย</td><td><input type="radio" name="o1" value="HW"></td><td><input type="radio" name="o1" value="HR"></td><td><input type="radio" name="o1" value="NO"></td><td><input type="radio" name="o1" value="G"></td></tr>
+<tr><td>2. ก่อนทำหัตถการปลอดเชื้อ</td><td><input type="radio" name="o2" value="HW"></td><td><input type="radio" name="o2" value="HR"></td><td><input type="radio" name="o2" value="NO"></td><td><input type="radio" name="o2" value="G"></td></tr>
+<tr><td>3. หลังสัมผัสสารคัดหลั่ง</td><td><input type="radio" name="o3" value="HW"></td><td><input type="radio" name="o3" value="HR"></td><td><input type="radio" name="o3" value="NO"></td><td><input type="radio" name="o3" value="G"></td></tr>
+<tr><td>4. หลังสัมผัสผู้ป่วย</td><td><input type="radio" name="o4" value="HW"></td><td><input type="radio" name="o4" value="HR"></td><td><input type="radio" name="o4" value="NO"></td><td><input type="radio" name="o4" value="G"></td></tr>
+<tr><td>5. หลังสัมผัสสิ่งรอบตัวผู้ป่วย</td><td><input type="radio" name="o5" value="HW"></td><td><input type="radio" name="o5" value="HR"></td><td><input type="radio" name="o5" value="NO"></td><td><input type="radio" name="o5" value="G"></td></tr>
+</table>
+
+<p style="margin-top:15px"><button onclick="processData()">แสดงประมวลผลรายงาน</button></p>
+<div id="output" class="result"></div>
+</div>
+
+<script>
+function processData(){
+  let total=5;
+  let hw=0, hr=0, clean=0;
+  for(let i=1;i<=5;i++){
+    let v=document.querySelector('input[name=o'+i+']:checked');
+    if(!v) continue;
+    if(v.value==='HW'){hw++; clean++;}
+    if(v.value==='HR'){hr++; clean++;}
+  }
+  let html=`<h3>ผลการประมวลผล</h3>`;
+  html+=`<p>1. อัตราการทำความสะอาดมือรายโอกาส = ${(clean/total*100).toFixed(1)}%</p>`;
+  html+=`<p>2. อัตราการทำความสะอาดมือภาพรวม = ${(clean/total*100).toFixed(1)}%</p>`;
+  html+=`<p>3. สัดส่วนการทำความสะอาดมือ</p>`;
+  html+=`<ul><li>น้ำและสบู่ (HW): ${hw} ครั้ง</li><li>Alcohol hand rub (HR): ${hr} ครั้ง</li></ul>`;
+  let job=document.querySelector('input[name=job]:checked');
+  if(job) html+=`<p>4. วิชาชีพที่สังเกต: <b>${job.value}</b></p>`;
+  document.getElementById('output').innerHTML=html;
+}
+</script>
+
+</body>
+</html>
