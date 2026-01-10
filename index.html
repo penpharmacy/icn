@@ -11,16 +11,17 @@
     <style>
         body { font-family: 'Sarabun', sans-serif; background-color: #f0f2f5; color: #333; }
         .header-banner { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; padding: 30px; border-radius: 0 0 25px 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .card { border-radius: 15px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 25px; transition: transform 0.2s; }
+        .card { border-radius: 15px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 25px; }
         .section-title { border-left: 6px solid #11998e; padding-left: 15px; margin-bottom: 25px; color: #11998e; font-weight: bold; font-size: 1.2rem; }
         .dash-card { background: white; border-radius: 15px; padding: 25px; text-align: center; border-bottom: 4px solid #11998e; height: 100%; }
         .dash-title { font-size: 0.85rem; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; font-weight: bold; }
         .dash-value { font-size: 2rem; font-weight: 800; color: #2c3e50; }
         .radio-group-box { background: #fafafa; padding: 18px; border-radius: 12px; border: 1px solid #eee; height: 100%; }
         .other-input { display: none; margin-top: 10px; border-color: #11998e; }
-        .table thead { background-color: #f8f9fa; }
-        .btn-success { background-color: #11998e; border: none; }
-        .btn-success:hover { background-color: #0e857a; }
+        .btn-check:checked + .btn-outline-primary { background-color: #0d6efd; color: white; }
+        .btn-check:checked + .btn-outline-info { background-color: #0dcaf0; color: white; }
+        .btn-check:checked + .btn-outline-danger { background-color: #dc3545; color: white; }
+        .btn-check:checked + .btn-outline-secondary { background-color: #6c757d; color: white; }
         @media print { .no-print { display: none !important; } .card { box-shadow: none; border: 1px solid #eee; } }
     </style>
 </head>
@@ -28,7 +29,7 @@
 
 <div class="header-banner text-center mb-4 no-print">
     <h2 class="fw-bold"><i class="fas fa-hands-wash"></i> Hand Hygiene Audit</h2>
-    <p class="mb-0 opacity-75">โปรแกรมบันทึกและสรุปผลการล้างมือ - โรงพยาบาลพุนพิน</p>
+    <p class="mb-0 opacity-75">โปรแกรมบันทึกการล้างมือ - โรงพยาบาลพุนพิน</p>
 </div>
 
 <div class="container-fluid px-lg-5">
@@ -63,7 +64,7 @@
                 </div>
             </div>
             <div class="col-md-6 border-start ps-4">
-                <label class="form-label fw-bold text-warning">3. ความพร้อมอุปกรณ์ (Checklist)</label>
+                <label class="form-label fw-bold text-warning">3. ความพร้อมอุปกรณ์สนับสนุนการล้างมือ (Checklist)</label>
                 <div class="row bg-light p-3 rounded-3">
                     <div class="col-6">
                         <div class="form-check mb-2"><input class="form-check-input equip" type="checkbox" id="e0"><label class="small">อ่างล้างมือ</label></div>
@@ -112,7 +113,7 @@
         </div>
         <div class="col-md-3">
             <div class="dash-card" style="border-bottom-color: #ffc107;">
-                <div class="dash-title text-warning">อุปกรณ์พร้อมใช้</div>
+                <div class="dash-title text-warning">อุปกรณ์ล้างมือพร้อมใช้</div>
                 <div class="dash-value text-warning" id="equip_rate">0.0%</div>
             </div>
         </div>
@@ -129,7 +130,7 @@
             <div class="table-responsive">
                 <table class="table table-hover table-bordered text-center align-middle">
                     <thead class="table-light">
-                        <tr><th class="text-start">Moment</th><th>HW (%)</th><th>HR (%)</th><th>ไม่ล้าง (%)</th><th>ถุงมือ (%)</th></tr>
+                        <tr><th class="text-start">Moment</th><th>HW (%)</th><th>HR (%)</th><th>ไม่ล้างมือ (%)</th><th>สวมถุงมือ (%)</th></tr>
                     </thead>
                     <tbody id="momentTableBody"></tbody>
                 </table>
@@ -141,7 +142,7 @@
                 <div class="card p-4">
                     <h5 class="section-title">แยกตามแผนก</h5>
                     <table class="table table-sm table-bordered text-center">
-                        <thead><tr><th>แผนก</th><th>HW</th><th>HR</th><th>ไม่ล้าง</th><th>ถุงมือ</th></tr></thead>
+                        <thead><tr><th>แผนก</th><th>HW</th><th>HR</th><th>ไม่ล้างมือ</th><th>สวมถุงมือ</th></tr></thead>
                         <tbody id="deptTableBody"></tbody>
                     </table>
                 </div>
@@ -150,7 +151,7 @@
                 <div class="card p-4">
                     <h5 class="section-title">แยกตามวิชาชีพ</h5>
                     <table class="table table-sm table-bordered text-center">
-                        <thead><tr><th>วิชาชีพ</th><th>HW</th><th>HR</th><th>ไม่ล้าง</th><th>ถุงมือ</th></tr></thead>
+                        <thead><tr><th>วิชาชีพ</th><th>HW</th><th>HR</th><th>ไม่ล้างมือ</th><th>สวมถุงมือ</th></tr></thead>
                         <tbody id="roleTableBody"></tbody>
                     </table>
                 </div>
@@ -160,8 +161,19 @@
         <div class="card p-4">
             <h5 class="section-title">ความพร้อมอุปกรณ์แยกตามแผนก (%)</h5>
             <div class="table-responsive">
-                <table class="table table-sm table-bordered text-center">
-                    <thead class="small"><tr><th>แผนก</th><th>อ่าง</th><th>สบู่</th><th>CHG</th><th>Alcohol</th><th>กระดาษ</th><th>โปสเตอร์</th><th>ถังขยะ</th></tr></thead>
+                <table class="table table-sm table-bordered text-center align-middle">
+                    <thead class="small table-light">
+                        <tr>
+                            <th>แผนก</th>
+                            <th>อ่างล้างมือ</th>
+                            <th>สบู่เหลว</th>
+                            <th>4% CHG</th>
+                            <th>Alcohol Rub</th>
+                            <th>กระดาษเช็ดมือ</th>
+                            <th>โปสเตอร์</th>
+                            <th>ถังขยะ</th>
+                        </tr>
+                    </thead>
                     <tbody id="equipDeptTableBody"></tbody>
                 </table>
             </div>
@@ -171,7 +183,7 @@
 
 <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzBrC7afQChoOR2RrSWUQXoX3B0pSkj-Vrrt0OIUSSd_Ms4YsLzPXUI5lvjm0QohtmD4w/exec"; 
-    const momentLabels = ["ก่อนสัมผัสผู้ป่วย", "ก่อนหัตถการปลอดเชื้อ", "หลังสัมผัสสารคัดหลั่ง", "หลังสัมผัสผู้ป่วย", "หลังสัมผัสสิ่งแวดล้อม"];
+    const momentLabels = ["ก่อนสัมผัสผู้ป่วย", "ก่อนทำหัตถการปลอดเชื้อ", "หลังสัมผัสสารคัดหลั่งผู้ป่วย", "หลังสัมผัสผู้ป่วย", "หลังสัมผัสสิ่งรอบตัวผู้ป่วย"];
     let database = [];
 
     window.onload = function() {
@@ -182,12 +194,12 @@
                 render(database);
             })
             .catch(err => {
-                console.log("Offline mode or error fetching");
+                console.log("Fetch Error / Local Mode");
                 render(database);
             });
     };
 
-    // Render Moment Inputs
+    // สร้าง Input สำหรับ 5 Moments
     const mDiv = document.getElementById('momentInputList');
     momentLabels.forEach((label, i) => {
         mDiv.innerHTML += `
@@ -223,8 +235,14 @@
         const dRadio = document.querySelector('input[name="deptRadio"]:checked');
         const rRadio = document.querySelector('input[name="roleRadio"]:checked');
 
-        if (!dDate || !dTime || !dRadio || !rRadio) return alert("กรุณากรอกข้อมูลส่วนหัวให้ครบถ้วน");
-        for (let i = 0; i < 5; i++) { if (!document.querySelector(`input[name="m${i}"]:checked`)) return alert(`กรุณาประเมิน Moment ที่ ${i+1}`); }
+        if (!dDate || !dTime || !dRadio || !rRadio) return alert("กรุณากรอกข้อมูลให้ครบ");
+        for (let i = 0; i < 5; i++) { 
+            if (!document.querySelector(`input[name="m${i}"]:checked`)) {
+                return alert(`กรุณาประเมิน Moment ที่ ${i+1}`); 
+            }
+        }
+
+        if (!confirm("คุณต้องการบันทึกข้อมูลนี้ลงในระบบใช่หรือไม่?")) return; 
 
         let dVal = dRadio.value === "อื่นๆ" ? (document.getElementById('deptOther').value || "อื่นๆ") : dRadio.value;
         let rVal = rRadio.value === "อื่นๆ" ? (document.getElementById('roleOther').value || "อื่นๆ") : rRadio.value;
@@ -235,11 +253,9 @@
             equips: Array.from(document.querySelectorAll('.equip')).map(e => e.checked ? 1 : 0)
         };
 
-        // Post to Cloud
         fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(record) });
-
         database.push(record);
-        render(database); // อัปเดตตารางและ Dashboard ทันที
+        render(database);
         alert("บันทึกข้อมูลเรียบร้อยแล้ว"); 
         clearForm();
     }
@@ -287,15 +303,33 @@
         });
     }
 
+    // ฟังก์ชันที่ปรับปรุงใหม่ตามเงื่อนไขสีและเศษส่วน
     function renderEquipTable(data) {
-        const body = document.getElementById('equipDeptTableBody'); body.innerHTML = '';
+        const body = document.getElementById('equipDeptTableBody'); 
+        body.innerHTML = '';
         const depts = [...new Set(data.map(d => d.dept))];
+        
         depts.forEach(dn => {
             let f = data.filter(d => d.dept === dn);
             let row = `<tr><td class="fw-bold">${dn}</td>`;
+            
             for(let i=0; i<7; i++) {
                 let count = f.filter(x => x.equips[i] === 1).length;
-                row += `<td>${((count/f.length)*100).toFixed(0)}%</td>`;
+                let total = f.length;
+                let pct = (total === 0) ? 0 : (count / total) * 100;
+                
+                // กำหนดสีตามเงื่อนไข: 0%=แดง, 100%=เขียว, อื่นๆ=ดำ
+                let textColor = '#333';
+                if (pct === 0) {
+                    textColor = '#dc3545'; // แดง
+                } else if (pct === 100) {
+                    textColor = '#198754'; // เขียว
+                }
+
+                row += `<td>
+                            <span style="color: ${textColor}; font-weight: bold;">${pct.toFixed(0)}%</span><br>
+                            <small class="text-muted">(${count}/${total})</small>
+                        </td>`;
             }
             body.innerHTML += row + "</tr>";
         });
@@ -305,7 +339,11 @@
         if(database.length === 0) return alert("ไม่มีข้อมูลสำหรับการส่งออก");
         const ws = XLSX.utils.json_to_sheet(database.map(d => ({
             "วันที่": d.obsDate, "เวลา": d.obsTime, "แผนก": d.dept, "วิชาชีพ": d.role,
-            "M1": d.m[0], "M2": d.m[1], "M3": d.m[2], "M4": d.m[3], "M5": d.m[4]
+            "M1": d.m[0], "M2": d.m[1], "M3": d.m[2], "M4": d.m[3], "M5": d.m[4],
+            "อุปกรณ์ 1 (อ่างล้างมือ)": d.equips[0], "อุปกรณ์ 2 (สบู่เหลว)": d.equips[1],
+            "อุปกรณ์ 3 (4% CHG)": d.equips[2], "อุปกรณ์ 4 (Alcohol Rub)": d.equips[3],
+            "อุปกรณ์ 5 (กระดาษเช็ดมือ)": d.equips[4], "อุปกรณ์ 6 (โปสเตอร์)": d.equips[5],
+            "อุปกรณ์ 7 (ถังขยะ)": d.equips[6]
         })));
         const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "AuditData"); 
         XLSX.writeFile(wb, `IC_HandHygiene_${new Date().toISOString().slice(0,10)}.xlsx`);
