@@ -8,53 +8,51 @@
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { font-family: 'Sarabun', sans-serif; background-color: #f4f7f6; color: #333; }
-        .header-banner { background: linear-gradient(135deg, #1d976c, #93f9b9); color: white; padding: 20px; border-radius: 0 0 20px 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .card { border-radius: 12px; border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .section-title { border-left: 5px solid #1d976c; padding-left: 12px; margin-bottom: 20px; color: #1d976c; font-weight: bold; }
-        .radio-group-box { background: #fdfdfd; padding: 15px; border-radius: 8px; border: 1px dashed #ddd; }
-        .other-input { display: none; margin-top: 10px; }
-        
-        /* Dashboard Styles from Code 2 */
-        .dash-card { background: white; border-radius: 10px; padding: 12px; text-align: center; border: 1px solid #eee; height: 100%; }
-        .dash-title { font-size: 1rem; color: #444; margin-bottom: 2px; font-weight: 700; }
-        .dash-value { font-size: 1.4rem; font-weight: 800; display: block; line-height: 1.2; }
-        .dash-fraction { font-size: 0.8rem; font-weight: 400; color: #888; display: block; }
-        .chart-container { position: relative; height: 220px; width: 100%; }
-        h6.chart-label { font-size: 0.9rem; font-weight: bold; margin-bottom: 8px; color: #555; text-align: center; min-height: 2.5em; display: flex; align-items: center; justify-content: center; }
-
-        @media print { .no-print { display: none !important; } .card { box-shadow: none; border: 1px solid #ddd; } }
+        body { font-family: 'Sarabun', sans-serif; background-color: #f0f2f5; color: #333; }
+        .header-banner { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; padding: 30px; border-radius: 0 0 25px 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .card { border-radius: 15px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 25px; transition: transform 0.2s; }
+        .section-title { border-left: 6px solid #11998e; padding-left: 15px; margin-bottom: 25px; color: #11998e; font-weight: bold; font-size: 1.2rem; }
+        .dash-card { background: white; border-radius: 15px; padding: 25px; text-align: center; border-bottom: 4px solid #11998e; height: 100%; }
+        .dash-title { font-size: 0.85rem; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; font-weight: bold; }
+        .dash-value { font-size: 2rem; font-weight: 800; color: #2c3e50; }
+        .radio-group-box { background: #fafafa; padding: 18px; border-radius: 12px; border: 1px solid #eee; height: 100%; }
+        .other-input { display: none; margin-top: 10px; border-color: #11998e; }
+        .table thead { background-color: #f8f9fa; }
+        .btn-success { background-color: #11998e; border: none; }
+        .btn-success:hover { background-color: #0e857a; }
+        @media print { .no-print { display: none !important; } .card { box-shadow: none; border: 1px solid #eee; } }
     </style>
 </head>
 <body>
 
 <div class="header-banner text-center mb-4 no-print">
-    <h3 class="fw-bold mb-0"><i class="fas fa-hands-wash"></i> ระบบ IC Hand Hygiene Audit โรงพยาบาลพุนพิน</h3>
+    <h2 class="fw-bold"><i class="fas fa-hands-wash"></i> Hand Hygiene Audit</h2>
+    <p class="mb-0 opacity-75">โปรแกรมบันทึกและสรุปผลการล้างมือ - โรงพยาบาลพุนพิน</p>
 </div>
 
-<div class="container-fluid px-4">
-    <div class="card p-4 no-print" id="inputForm">
+<div class="container-fluid px-lg-5">
+    <div class="card p-4 no-print">
         <h5 class="section-title"><i class="fas fa-edit"></i> บันทึกผลการสังเกตการณ์</h5>
         <div class="row g-3 mb-4">
-            <div class="col-md-3"><label class="form-label fw-bold">วันที่สังเกต</label><input type="date" id="obsDate" class="form-control"></div>
-            <div class="col-md-2"><label class="form-label fw-bold">เวลา</label><input type="time" id="obsTime" class="form-control"></div>
+            <div class="col-md-3"><label class="form-label fw-bold">วันที่สังเกต</label><input type="date" id="obsDate" class="form-control form-control-lg"></div>
+            <div class="col-md-2"><label class="form-label fw-bold">เวลา</label><input type="time" id="obsTime" class="form-control form-control-lg"></div>
         </div>
+        
         <div class="row g-4">
             <div class="col-md-3">
-                <label class="form-label fw-bold">แผนก</label>
+                <label class="form-label fw-bold text-primary">1. แผนก</label>
                 <div class="radio-group-box">
                     <div class="form-check mb-2"><input class="form-check-input" type="radio" name="deptRadio" value="OPD" id="d_opd"><label class="form-check-label" for="d_opd">OPD</label></div>
                     <div class="form-check mb-2"><input class="form-check-input" type="radio" name="deptRadio" value="IPD" id="d_ipd"><label class="form-check-label" for="d_ipd">IPD</label></div>
                     <div class="form-check mb-2"><input class="form-check-input" type="radio" name="deptRadio" value="LR" id="d_lr"><label class="form-check-label" for="d_lr">LR</label></div>
                     <div class="form-check mb-2"><input class="form-check-input" type="radio" name="deptRadio" value="ER" id="d_er"><label class="form-check-label" for="d_er">ER</label></div>
                     <div class="form-check mb-2"><input class="form-check-input" type="radio" name="deptRadio" value="อื่นๆ" id="d_other" onclick="toggleOther('deptOther', true)"><label class="form-check-label" for="d_other">อื่นๆ</label></div>
-                    <input type="text" id="deptOther" class="form-control form-control-sm other-input" placeholder="ระบุแผนก...">
+                    <input type="text" id="deptOther" class="form-control form-control-sm other-input" placeholder="ระบุชื่อแผนก...">
                 </div>
             </div>
             <div class="col-md-3">
-                <label class="form-label fw-bold">วิชาชีพ</label>
+                <label class="form-label fw-bold text-primary">2. วิชาชีพ</label>
                 <div class="radio-group-box">
                     <div class="form-check mb-2"><input class="form-check-input" type="radio" name="roleRadio" value="แพทย์" id="r_dr"><label class="form-check-label" for="r_dr">แพทย์</label></div>
                     <div class="form-check mb-2"><input class="form-check-input" type="radio" name="roleRadio" value="พยาบาล" id="r_ns"><label class="form-check-label" for="r_ns">พยาบาล</label></div>
@@ -65,128 +63,152 @@
                 </div>
             </div>
             <div class="col-md-6 border-start ps-4">
-                <h6 class="fw-bold">ความพร้อมอุปกรณ์</h6>
-                <div class="row">
+                <label class="form-label fw-bold text-warning">3. ความพร้อมอุปกรณ์ (Checklist)</label>
+                <div class="row bg-light p-3 rounded-3">
                     <div class="col-6">
-                        <div class="form-check mb-1"><input class="form-check-input equip" type="checkbox" id="e0"><label class="small">อ่างล้างมือ</label></div>
-                        <div class="form-check mb-1"><input class="form-check-input equip" type="checkbox" id="e1"><label class="small">สบู่เหลว</label></div>
-                        <div class="form-check mb-1"><input class="form-check-input equip" type="checkbox" id="e2"><label class="small">4% Chlorhexidine</label></div>
-                        <div class="form-check mb-1"><input class="form-check-input equip" type="checkbox" id="e3"><label class="small">Alcohol hand rub</label></div>
+                        <div class="form-check mb-2"><input class="form-check-input equip" type="checkbox" id="e0"><label class="small">อ่างล้างมือ</label></div>
+                        <div class="form-check mb-2"><input class="form-check-input equip" type="checkbox" id="e1"><label class="small">สบู่เหลว</label></div>
+                        <div class="form-check mb-2"><input class="form-check-input equip" type="checkbox" id="e2"><label class="small">4% Chlorhexidine</label></div>
+                        <div class="form-check mb-2"><input class="form-check-input equip" type="checkbox" id="e3"><label class="small">Alcohol hand rub</label></div>
                     </div>
                     <div class="col-6">
-                        <div class="form-check mb-1"><input class="form-check-input equip" type="checkbox" id="e4"><label class="small">กระดาษเช็ดมือ</label></div>
-                        <div class="form-check mb-1"><input class="form-check-input equip" type="checkbox" id="e5"><label class="small">โปสเตอร์สอนล้างมือ</label></div>
-                        <div class="form-check mb-1"><input class="form-check-input equip" type="checkbox" id="e6"><label class="small">ถังขยะ</label></div>
+                        <div class="form-check mb-2"><input class="form-check-input equip" type="checkbox" id="e4"><label class="small">กระดาษเช็ดมือ</label></div>
+                        <div class="form-check mb-2"><input class="form-check-input equip" type="checkbox" id="e5"><label class="small">โปสเตอร์สอนล้างมือ</label></div>
+                        <div class="form-check mb-2"><input class="form-check-input equip" type="checkbox" id="e6"><label class="small">ถังขยะ</label></div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="mt-4 border-top pt-3">
-            <h6 class="fw-bold mb-3">การปฏิบัติ 5 Moments</h6>
-            <div id="momentInputList" class="row"></div>
+
+        <div class="mt-4 border-top pt-4">
+            <h6 class="fw-bold mb-3 text-success">4. การปฏิบัติ 5 Moments</h6>
+            <div id="momentInputList" class="row g-3"></div>
         </div>
+
         <div class="text-end mt-4">
-            <button class="btn btn-outline-secondary me-2" onclick="clearForm()"><i class="fas fa-eraser"></i> ล้างฟอร์ม</button>
-            <button class="btn btn-success px-5" onclick="saveData()"><i class="fas fa-save"></i> บันทึกข้อมูล</button>
+            <button class="btn btn-light border px-4 me-2" onclick="clearForm()">ล้างฟอร์ม</button>
+            <button class="btn btn-success btn-lg px-5 shadow" onclick="saveData()"><i class="fas fa-save me-2"></i> บันทึกข้อมูล</button>
         </div>
     </div>
 
-    <hr class="my-5 no-print">
-    
-    <div class="card p-3 no-print bg-light border">
-        <div class="row align-items-end g-2">
-            <div class="col-md-3">
-                <label class="form-label fw-bold small">รูปแบบการแสดงรายงาน</label>
-                <select class="form-select form-select-sm" id="filterType" onchange="toggleFilterInputs()">
-                    <option value="all">ข้อมูลทั้งหมด</option>
-                    <option value="month">รายเดือน</option>
-                    <option value="year">รายปี</option>
-                    <option value="range">กำหนดช่วงวันที่</option>
-                </select>
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="dash-card">
+                <div class="dash-title">Hand Wash (HW)</div>
+                <div class="dash-value" id="hw_total">0.0%</div>
             </div>
-            <div id="monthFilterGroup" class="col-md-2" style="display:none;"><label class="small">เลือกเดือน</label><input type="month" id="filterMonth" class="form-control form-control-sm"></div>
-            <div id="yearFilterGroup" class="col-md-2" style="display:none;"><label class="small">ระบุปี (ค.ศ.)</label><input type="number" id="filterYear" class="form-control form-control-sm" placeholder="2026"></div>
-            <div id="rangeFilterGroupStart" class="col-md-2" style="display:none;"><label class="small">จากวันที่</label><input type="date" id="filterStart" class="form-control form-control-sm"></div>
-            <div id="rangeFilterGroupEnd" class="col-md-2" style="display:none;"><label class="small">ถึงวันที่</label><input type="date" id="filterEnd" class="form-control form-control-sm"></div>
-            <div class="col-md-2"><button class="btn btn-primary btn-sm w-100" onclick="updateReports()"><i class="fas fa-sync-alt"></i> อัปเดตข้อมูล</button></div>
+        </div>
+        <div class="col-md-3">
+            <div class="dash-card">
+                <div class="dash-title">Hand Rub (HR)</div>
+                <div class="dash-value" id="hr_total">0.0%</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dash-card" style="border-bottom-color: #28a745;">
+                <div class="dash-title text-success">Overall Compliance</div>
+                <div class="dash-value text-success" id="comp_rate">0.0%</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dash-card" style="border-bottom-color: #ffc107;">
+                <div class="dash-title text-warning">อุปกรณ์พร้อมใช้</div>
+                <div class="dash-value text-warning" id="equip_rate">0.0%</div>
+            </div>
         </div>
     </div>
 
-    <h5 class="section-title mt-4"><i class="fas fa-chart-pie"></i> แดชบอร์ดสรุปผล</h5>
-    <div class="row g-2 mb-3">
-        <div class="col-md-3"><div class="dash-card"><div class="dash-title">HW Overall</div><div class="dash-value text-primary" id="hw_val">0%</div><div class="dash-fraction" id="hw_frac">(0/0)</div></div></div>
-        <div class="col-md-3"><div class="dash-card"><div class="dash-title">HR Overall</div><div class="dash-value text-info" id="hr_val">0%</div><div class="dash-fraction" id="hr_frac">(0/0)</div></div></div>
-        <div class="col-md-3"><div class="dash-card"><div class="dash-title">Compliance Rate</div><div class="dash-value text-success" id="comp_val">0%</div><div class="dash-fraction" id="comp_frac">(0/0)</div></div></div>
-        <div class="col-md-3"><div class="dash-card"><div class="dash-title">อุปกรณ์พร้อมใช้</div><div class="dash-value text-warning" id="equip_val">0%</div><div class="dash-fraction" id="equip_frac">(0/0)</div></div></div>
-    </div>
-
-    <div class="row g-2 mb-3">
-        <div class="col-md-4"><div class="card p-2 h-100"><h6 class="chart-label">สัดส่วนวิธีปฏิบัติภาพรวม</h6><div class="chart-container"><canvas id="pieChart"></canvas></div></div></div>
-        <div class="col-md-4"><div class="card p-2 h-100"><h6 class="chart-label">ความร่วมมือแยกตาม 5 Moments (%)</h6><div class="chart-container"><canvas id="momentChart"></canvas></div></div></div>
-        <div class="col-md-4"><div class="card p-2 h-100"><h6 class="chart-label">Compliance Rate รายแผนก</h6><div class="chart-container"><canvas id="deptChart"></canvas></div></div></div>
-    </div>
-
-    <div class="text-end mb-3 no-print">
-        <button class="btn btn-success btn-sm me-2" onclick="exportToExcel()"><i class="fas fa-file-excel"></i> Export Excel</button>
-        <button class="btn btn-info btn-sm text-white" onclick="window.print()"><i class="fas fa-file-pdf"></i> พิมพ์รายงาน PDF</button>
+    <div class="text-end mb-4 no-print">
+        <button class="btn btn-outline-success me-2" onclick="exportToExcel()"><i class="fas fa-file-excel"></i> Export Excel</button>
+        <button class="btn btn-outline-dark" onclick="window.print()"><i class="fas fa-print"></i> พิมพ์รายงาน</button>
     </div>
 
     <div id="reportArea">
-        <div class="card p-3">
-            <h5 class="section-title">สรุป 5 Moments สำหรับการล้างมือ</h5>
+        <div class="card p-4">
+            <h5 class="section-title">สรุปตาม 5 Moments</h5>
             <div class="table-responsive">
-                <table class="table table-bordered table-sm text-center align-middle"><thead class="table-light"><tr><th class="text-start">Moment</th><th>HW (%)</th><th>HR (%)</th><th>ไม่ล้าง (%)</th><th>ถุงมือ (%)</th></tr></thead><tbody id="momentTableBody"></tbody></table>
+                <table class="table table-hover table-bordered text-center align-middle">
+                    <thead class="table-light">
+                        <tr><th class="text-start">Moment</th><th>HW (%)</th><th>HR (%)</th><th>ไม่ล้าง (%)</th><th>ถุงมือ (%)</th></tr>
+                    </thead>
+                    <tbody id="momentTableBody"></tbody>
+                </table>
             </div>
         </div>
-        <div class="row g-2">
-            <div class="col-md-6"><div class="card p-3"><h5 class="section-title">แยกตามแผนก (%)</h5><table class="table table-bordered table-sm text-center"><thead class="table-light"><tr><th>แผนก</th><th>HW</th><th>HR</th><th>ไม่ล้าง</th><th>ถุงมือ</th></tr></thead><tbody id="deptTableBody"></tbody></table></div></div>
-            <div class="col-md-6"><div class="card p-3"><h5 class="section-title">แยกตามวิชาชีพ (%)</h5><table class="table table-bordered table-sm text-center"><thead class="table-light"><tr><th>วิชาชีพ</th><th>HW</th><th>HR</th><th>ไม่ล้าง</th><th>ถุงมือ</th></tr></thead><tbody id="roleTableBody"></tbody></table></div></div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card p-4">
+                    <h5 class="section-title">แยกตามแผนก</h5>
+                    <table class="table table-sm table-bordered text-center">
+                        <thead><tr><th>แผนก</th><th>HW</th><th>HR</th><th>ไม่ล้าง</th><th>ถุงมือ</th></tr></thead>
+                        <tbody id="deptTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card p-4">
+                    <h5 class="section-title">แยกตามวิชาชีพ</h5>
+                    <table class="table table-sm table-bordered text-center">
+                        <thead><tr><th>วิชาชีพ</th><th>HW</th><th>HR</th><th>ไม่ล้าง</th><th>ถุงมือ</th></tr></thead>
+                        <tbody id="roleTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-4">
+            <h5 class="section-title">ความพร้อมอุปกรณ์แยกตามแผนก (%)</h5>
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered text-center">
+                    <thead class="small"><tr><th>แผนก</th><th>อ่าง</th><th>สบู่</th><th>CHG</th><th>Alcohol</th><th>กระดาษ</th><th>โปสเตอร์</th><th>ถังขยะ</th></tr></thead>
+                    <tbody id="equipDeptTableBody"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    // --- ตั้งค่าเชื่อมต่อ Apps Script (ใช้ URL ของคุณ) ---
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzBrC7afQChoOR2RrSWUQXoX3B0pSkj-Vrrt0OIUSSd_Ms4YsLzPXUI5lvjm0QohtmD4w/exec"; 
-    
-    let database = [];
-    let charts = {};
     const momentLabels = ["ก่อนสัมผัสผู้ป่วย", "ก่อนหัตถการปลอดเชื้อ", "หลังสัมผัสสารคัดหลั่ง", "หลังสัมผัสผู้ป่วย", "หลังสัมผัสสิ่งแวดล้อม"];
+    let database = [];
 
     window.onload = function() {
-        initMomentInputs();
-        fetchData();
+        fetch(SCRIPT_URL)
+            .then(res => res.json())
+            .then(data => {
+                database = data;
+                render(database);
+            })
+            .catch(err => {
+                console.log("Offline mode or error fetching");
+                render(database);
+            });
     };
 
-    function initMomentInputs() {
-        const mDiv = document.getElementById('momentInputList');
-        momentLabels.forEach((label, i) => {
-            mDiv.innerHTML += `<div class="col-md-6 mb-2 border-bottom pb-2"><label class="small fw-bold d-block">${i+1}. ${label}</label>
-                <div class="d-flex gap-3 mt-1">
-                    <div class="form-check"><input class="form-check-input" type="radio" name="m${i}" value="HW" id="m${i}hw"><label class="small" for="m${i}hw">HW</label></div>
-                    <div class="form-check"><input class="form-check-input" type="radio" name="m${i}" value="HR" id="m${i}hr"><label class="small" for="m${i}hr">HR</label></div>
-                    <div class="form-check"><input class="form-check-input" type="radio" name="m${i}" value="None" id="m${i}no"><label class="small" for="m${i}no">ไม่ล้าง</label></div>
-                    <div class="form-check"><input class="form-check-input" type="radio" name="m${i}" value="Glove" id="m${i}gl"><label class="small" for="m${i}gl">ถุงมือ</label></div>
-                </div></div>`;
-        });
-    }
-
-    function fetchData() {
-        fetch(SCRIPT_URL).then(res => res.json()).then(data => {
-            database = data;
-            updateReports();
-        }).catch(err => console.error("Fetch error:", err));
-    }
+    // Render Moment Inputs
+    const mDiv = document.getElementById('momentInputList');
+    momentLabels.forEach((label, i) => {
+        mDiv.innerHTML += `
+        <div class="col-md-4">
+            <div class="p-3 border rounded-3 bg-white">
+                <label class="small fw-bold d-block mb-2 text-dark">${i+1}. ${label}</label>
+                <div class="d-flex flex-wrap gap-2">
+                    <input type="radio" class="btn-check" name="m${i}" id="m${i}hw" value="HW">
+                    <label class="btn btn-outline-primary btn-sm px-3" for="m${i}hw">HW</label>
+                    <input type="radio" class="btn-check" name="m${i}" id="m${i}hr" value="HR">
+                    <label class="btn btn-outline-info btn-sm px-3" for="m${i}hr">HR</label>
+                    <input type="radio" class="btn-check" name="m${i}" id="m${i}no" value="None">
+                    <label class="btn btn-outline-danger btn-sm px-2" for="m${i}no">ไม่ล้าง</label>
+                    <input type="radio" class="btn-check" name="m${i}" id="m${i}gl" value="Glove">
+                    <label class="btn btn-outline-secondary btn-sm px-2" for="m${i}gl">ถุงมือ</label>
+                </div>
+            </div>
+        </div>`;
+    });
 
     function toggleOther(id, show) { document.getElementById(id).style.display = show ? "block" : "none"; }
-    
-    function toggleFilterInputs() {
-        const type = document.getElementById('filterType').value;
-        document.getElementById('monthFilterGroup').style.display = (type === 'month') ? 'block' : 'none';
-        document.getElementById('yearFilterGroup').style.display = (type === 'year') ? 'block' : 'none';
-        document.getElementById('rangeFilterGroupStart').style.display = (type === 'range') ? 'block' : 'none';
-        document.getElementById('rangeFilterGroupEnd').style.display = (type === 'range') ? 'block' : 'none';
-    }
 
     function clearForm() {
         document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
@@ -201,7 +223,7 @@
         const dRadio = document.querySelector('input[name="deptRadio"]:checked');
         const rRadio = document.querySelector('input[name="roleRadio"]:checked');
 
-        if (!dDate || !dTime || !dRadio || !rRadio) return alert("กรุณากรอกข้อมูลให้ครบ");
+        if (!dDate || !dTime || !dRadio || !rRadio) return alert("กรุณากรอกข้อมูลส่วนหัวให้ครบถ้วน");
         for (let i = 0; i < 5; i++) { if (!document.querySelector(`input[name="m${i}"]:checked`)) return alert(`กรุณาประเมิน Moment ที่ ${i+1}`); }
 
         let dVal = dRadio.value === "อื่นๆ" ? (document.getElementById('deptOther').value || "อื่นๆ") : dRadio.value;
@@ -213,151 +235,80 @@
             equips: Array.from(document.querySelectorAll('.equip')).map(e => e.checked ? 1 : 0)
         };
 
+        // Post to Cloud
         fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(record) });
+
         database.push(record);
-        updateReports();
-        alert("บันทึกข้อมูลสำเร็จ");
+        render(database); // อัปเดตตารางและ Dashboard ทันที
+        alert("บันทึกข้อมูลเรียบร้อยแล้ว"); 
         clearForm();
     }
 
-    function updateReports() {
-        const type = document.getElementById('filterType').value;
-        let filtered = database;
-        if (type === 'month') {
-            const val = document.getElementById('filterMonth').value;
-            if (val) filtered = database.filter(d => d.obsDate && d.obsDate.substring(0, 7) === val);
-        } else if (type === 'year') {
-            const val = document.getElementById('filterYear').value;
-            if (val) filtered = database.filter(d => d.obsDate && d.obsDate.substring(0, 4) === val);
-        } else if (type === 'range') {
-            const start = document.getElementById('filterStart').value;
-            const end = document.getElementById('filterEnd').value;
-            if (start && end) filtered = database.filter(d => { 
-                const dD = d.obsDate.substring(0, 10); 
-                return dD >= start && dD <= end; 
-            });
-        }
-        render(filtered);
-    }
+    const formatVal = (count, total) => {
+        let pct = (total === 0) ? 0 : (count / total) * 100;
+        return `${pct.toFixed(1)}% <br><small class='text-muted'>(${count}/${total})</small>`;
+    };
 
     function render(data) {
         let n = data.length;
-        if (n === 0) { resetUI(); return; }
+        if(n === 0) return;
 
-        let hw = 0, hr = 0, none = 0, glove = 0, eqCount = 0;
+        let hw = 0, hr = 0, eq = 0;
         data.forEach(d => {
-            d.m.forEach(v => {
-                if(v === 'HW') hw++; else if(v === 'HR') hr++; 
-                else if(v === 'None') none++; else if(v === 'Glove') glove++;
-            });
-            d.equips.forEach(v => eqCount += v);
+            d.m.forEach(v => { if(v==='HW') hw++; if(v==='HR') hr++; });
+            d.equips.forEach(v => eq += v);
         });
 
-        // Update Dashboard
-        const totalMoments = n * 5;
-        const comp = hw + hr;
-        document.getElementById('hw_val').innerText = ((hw / totalMoments) * 100).toFixed(1) + "%";
-        document.getElementById('hw_frac').innerText = `(${hw}/${totalMoments})`;
-        document.getElementById('hr_val').innerText = ((hr / totalMoments) * 100).toFixed(1) + "%";
-        document.getElementById('hr_frac').innerText = `(${hr}/${totalMoments})`;
-        document.getElementById('comp_val').innerText = ((comp / totalMoments) * 100).toFixed(1) + "%";
-        document.getElementById('comp_frac').innerText = `(${comp}/${totalMoments})`;
-        document.getElementById('equip_val').innerText = ((eqCount / (n * 7)) * 100).toFixed(1) + "%";
-        document.getElementById('equip_frac').innerText = `(${eqCount}/${n*7})`;
+        document.getElementById('hw_total').innerText = ((hw / (n * 5)) * 100).toFixed(1) + "%";
+        document.getElementById('hr_total').innerText = ((hr / (n * 5)) * 100).toFixed(1) + "%";
+        document.getElementById('comp_rate').innerText = (((hw + hr) / (n * 5)) * 100).toFixed(1) + "%";
+        document.getElementById('equip_rate').innerText = ((eq / (n * 7)) * 100).toFixed(1) + "%";
 
-        // Charts
-        updatePieChart(hw, hr, none, glove);
-        updateMomentChart(data);
-        updateDeptChart(data);
-
-        // Tables
-        renderTables(data);
-    }
-
-    function updatePieChart(hw, hr, none, glove) {
-        if (charts.pie) charts.pie.destroy();
-        charts.pie = new Chart(document.getElementById('pieChart'), {
-            type: 'doughnut',
-            data: {
-                labels: ['HW', 'HR', 'ไม่ล้าง', 'ถุงมือ'],
-                datasets: [{ data: [hw, hr, none, glove], backgroundColor: ['#0d6efd', '#0dcaf0', '#dc3545', '#ffc107'] }]
-            },
-            options: { responsive: true, maintainAspectRatio: false }
-        });
-    }
-
-    function updateMomentChart(data) {
-        const n = data.length;
-        const compRates = momentLabels.map((_, idx) => {
-            let ok = data.filter(d => d.m[idx] === 'HW' || d.m[idx] === 'HR').length;
-            return ((ok / n) * 100).toFixed(1);
-        });
-        if (charts.moment) charts.moment.destroy();
-        charts.moment = new Chart(document.getElementById('momentChart'), {
-            type: 'bar',
-            data: { labels: ['M1', 'M2', 'M3', 'M4', 'M5'], datasets: [{ label: '% Compliance', data: compRates, backgroundColor: '#198754' }] },
-            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } }
-        });
-    }
-
-    function updateDeptChart(data) {
-        const depts = [...new Set(data.map(d => d.dept))];
-        const rates = depts.map(dept => {
-            let f = data.filter(d => d.dept === dept);
-            let ok = 0;
-            f.forEach(d => d.m.forEach(v => { if(v==='HW' || v==='HR') ok++; }));
-            return ((ok / (f.length * 5)) * 100).toFixed(1);
-        });
-        if (charts.dept) charts.dept.destroy();
-        charts.dept = new Chart(document.getElementById('deptChart'), {
-            type: 'bar',
-            data: { labels: depts, datasets: [{ label: '% Compliance', data: rates, backgroundColor: '#0d6efd' }] },
-            options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false }
-        });
-    }
-
-    function renderTables(data) {
-        const n = data.length;
-        const fmt = (c, t) => t === 0 ? "0" : `${((c/t)*100).toFixed(1)}% (${c}/${t})`;
-
-        // Moment Table
         const mBody = document.getElementById('momentTableBody'); mBody.innerHTML = '';
         momentLabels.forEach((l, idx) => {
             let s = {HW:0, HR:0, None:0, Glove:0};
             data.forEach(d => s[d.m[idx]]++);
-            mBody.innerHTML += `<tr><td class="text-start">${l}</td><td>${fmt(s.HW,n)}</td><td>${fmt(s.HR,n)}</td><td>${fmt(s.None,n)}</td><td>${fmt(s.Glove,n)}</td></tr>`;
+            mBody.innerHTML += `<tr><td class="text-start fw-bold">${l}</td><td>${formatVal(s.HW, n)}</td><td>${formatVal(s.HR, n)}</td><td>${formatVal(s.None, n)}</td><td>${formatVal(s.Glove, n)}</td></tr>`;
         });
 
-        // Dept Table
-        const dBody = document.getElementById('deptTableBody'); dBody.innerHTML = '';
-        [...new Set(data.map(d => d.dept))].forEach(k => {
-            let f = data.filter(d => d.dept === k), s = {HW:0, HR:0, None:0, Glove:0};
-            f.forEach(d => d.m.forEach(v => s[v]++));
-            dBody.innerHTML += `<tr><td>${k}</td><td>${fmt(s.HW,f.length*5)}</td><td>${fmt(s.HR,f.length*5)}</td><td>${fmt(s.None,f.length*5)}</td><td>${fmt(s.Glove,f.length*5)}</td></tr>`;
-        });
+        renderTable(data, 'dept', 'deptTableBody');
+        renderTable(data, 'role', 'roleTableBody');
+        renderEquipTable(data);
+    }
 
-        // Role Table
-        const rBody = document.getElementById('roleTableBody'); rBody.innerHTML = '';
-        [...new Set(data.map(d => d.role))].forEach(k => {
-            let f = data.filter(d => d.role === k), s = {HW:0, HR:0, None:0, Glove:0};
+    function renderTable(data, field, bodyId) {
+        const body = document.getElementById(bodyId); body.innerHTML = '';
+        const keys = [...new Set(data.map(d => d[field]))];
+        keys.forEach(k => {
+            let f = data.filter(d => d[field] === k);
+            let s = {HW:0, HR:0, None:0, Glove:0};
             f.forEach(d => d.m.forEach(v => s[v]++));
-            rBody.innerHTML += `<tr><td>${k}</td><td>${fmt(s.HW,f.length*5)}</td><td>${fmt(s.HR,f.length*5)}</td><td>${fmt(s.None,f.length*5)}</td><td>${fmt(s.Glove,f.length*5)}</td></tr>`;
+            body.innerHTML += `<tr><td>${k}</td><td>${formatVal(s.HW, f.length*5)}</td><td>${formatVal(s.HR, f.length*5)}</td><td>${formatVal(s.None, f.length*5)}</td><td>${formatVal(s.Glove, f.length*5)}</td></tr>`;
         });
     }
 
-    function resetUI() {
-        ['hw_val','hr_val','comp_val','equip_val'].forEach(id => document.getElementById(id).innerText = "0%");
-        Object.values(charts).forEach(c => c && c.destroy());
-        document.getElementById('momentTableBody').innerHTML = "<tr><td colspan='5'>ไม่พบข้อมูล</td></tr>";
+    function renderEquipTable(data) {
+        const body = document.getElementById('equipDeptTableBody'); body.innerHTML = '';
+        const depts = [...new Set(data.map(d => d.dept))];
+        depts.forEach(dn => {
+            let f = data.filter(d => d.dept === dn);
+            let row = `<tr><td class="fw-bold">${dn}</td>`;
+            for(let i=0; i<7; i++) {
+                let count = f.filter(x => x.equips[i] === 1).length;
+                row += `<td>${((count/f.length)*100).toFixed(0)}%</td>`;
+            }
+            body.innerHTML += row + "</tr>";
+        });
     }
 
     function exportToExcel() {
-        if(database.length === 0) return alert("ไม่มีข้อมูล");
+        if(database.length === 0) return alert("ไม่มีข้อมูลสำหรับการส่งออก");
         const ws = XLSX.utils.json_to_sheet(database.map(d => ({
             "วันที่": d.obsDate, "เวลา": d.obsTime, "แผนก": d.dept, "วิชาชีพ": d.role,
             "M1": d.m[0], "M2": d.m[1], "M3": d.m[2], "M4": d.m[3], "M5": d.m[4]
         })));
-        const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Data"); XLSX.writeFile(wb, "IC_Audit_Report.xlsx");
+        const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "AuditData"); 
+        XLSX.writeFile(wb, `IC_HandHygiene_${new Date().toISOString().slice(0,10)}.xlsx`);
     }
 </script>
 </body>
