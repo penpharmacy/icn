@@ -1,99 +1,364 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <title>แบบประเมินการทำความสะอาดมือ – รพ.พุนพิน</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body { font-family: Tahoma, sans-serif; margin: 20px; background:#f6f8fa }
-    h1,h2,h3 { color:#0b5ed7 }
-    .box { background:#fff; padding:15px; border-radius:8px; margin-bottom:20px; box-shadow:0 2px 6px rgba(0,0,0,.1)}
-    label { margin-right:15px }
-    table { border-collapse: collapse; width:100%; margin-top:10px }
-    th,td { border:1px solid #ccc; padding:6px; text-align:center }
-    th { background:#e9ecef }
-    button { padding:10px 20px; font-size:16px; background:#0b5ed7; color:#fff; border:none; border-radius:6px; cursor:pointer }
-    button:hover { background:#084298 }
-    .result { background:#e7f1ff; padding:10px; border-radius:6px; margin-top:10px }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IC Hand Hygiene Audit - โรงพยาบาลพุนพิน</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Sarabun', sans-serif; background-color: #f4f7f6; color: #333; }
+        .header-banner { background: linear-gradient(135deg, #1d976c, #93f9b9); color: white; padding: 20px; border-radius: 0 0 20px 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .card { border-radius: 12px; border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .section-title { border-left: 5px solid #1d976c; padding-left: 12px; margin-bottom: 20px; color: #1d976c; font-weight: bold; }
+        .radio-group-box { background: #fdfdfd; padding: 15px; border-radius: 8px; border: 1px dashed #ddd; }
+        .other-input { display: none; margin-top: 10px; }
+        
+        /* Dashboard Styles from Code 2 */
+        .dash-card { background: white; border-radius: 10px; padding: 12px; text-align: center; border: 1px solid #eee; height: 100%; }
+        .dash-title { font-size: 1rem; color: #444; margin-bottom: 2px; font-weight: 700; }
+        .dash-value { font-size: 1.4rem; font-weight: 800; display: block; line-height: 1.2; }
+        .dash-fraction { font-size: 0.8rem; font-weight: 400; color: #888; display: block; }
+        .chart-container { position: relative; height: 220px; width: 100%; }
+        h6.chart-label { font-size: 0.9rem; font-weight: bold; margin-bottom: 8px; color: #555; text-align: center; min-height: 2.5em; display: flex; align-items: center; justify-content: center; }
+
+        @media print { .no-print { display: none !important; } .card { box-shadow: none; border: 1px solid #ddd; } }
+    </style>
 </head>
 <body>
 
-<h1>แบบประเมินการทำความสะอาดมือ<br>บุคลากรโรงพยาบาลพุนพิน</h1>
-
-<div class="box">
-<h2>1. ข้อมูลทั่วไป</h2>
-<p>
-<b>1.1 หอผู้ป่วย:</b>
-<label><input type="radio" name="ward" value="OPD"> OPD</label>
-<label><input type="radio" name="ward" value="IPD"> IPD</label>
-<label><input type="radio" name="ward" value="LR"> LR</label>
-<label><input type="radio" name="ward" value="ER"> ER</label>
-<label><input type="radio" name="ward" value="อื่นๆ"> อื่นๆ</label>
-</p>
-<p>
-<b>1.2 วันที่:</b> <input type="date" id="date"> 
-<b>เวลา:</b> <input type="time" id="time">
-</p>
+<div class="header-banner text-center mb-4 no-print">
+    <h3 class="fw-bold mb-0"><i class="fas fa-hands-wash"></i> ระบบ IC Hand Hygiene Audit โรงพยาบาลพุนพิน</h3>
 </div>
 
-<div class="box">
-<h2>2. ความพร้อมใช้ของอุปกรณ์สนับสนุนการล้างมือ</h2>
-<p>2.1 อ่างล้างมือ: <label><input type="radio" name="sink" value="มี">มี</label> <label><input type="radio" name="sink" value="ไม่มี">ไม่มี</label></p>
-<p>2.2 น้ำยาล้างมือ:</p>
-<ul>
-<li>สบู่เหลว: <label><input type="radio" name="soap" value="มี">มี</label> <label><input type="radio" name="soap" value="ไม่มี">ไม่มี</label></li>
-<li>4% Chlorhexidine: <label><input type="radio" name="chx" value="มี">มี</label> <label><input type="radio" name="chx" value="ไม่มี">ไม่มี</label></li>
-<li>Alcohol hand rub: <label><input type="radio" name="ahr" value="มี">มี</label> <label><input type="radio" name="ahr" value="ไม่มี">ไม่มี</label></li>
-</ul>
-<p>2.3 กระดาษเช็ดมือ: <label><input type="radio" name="paper" value="มี">มี</label> <label><input type="radio" name="paper" value="ไม่มี">ไม่มี</label></p>
-<p>2.4 โปสเตอร์แสดงวิธีการล้างมือ: <label><input type="radio" name="poster" value="มี">มี</label> <label><input type="radio" name="poster" value="ไม่มี">ไม่มี</label></p>
-<p>2.5 ถังขยะใส่กระดาษเช็ดมือ: <label><input type="radio" name="bin" value="มี">มี</label> <label><input type="radio" name="bin" value="ไม่มี">ไม่มี</label></p>
-</div>
+<div class="container-fluid px-4">
+    <div class="card p-4 no-print" id="inputForm">
+        <h5 class="section-title"><i class="fas fa-edit"></i> บันทึกผลการสังเกตการณ์</h5>
+        <div class="row g-3 mb-4">
+            <div class="col-md-3"><label class="form-label fw-bold">วันที่สังเกต</label><input type="date" id="obsDate" class="form-control"></div>
+            <div class="col-md-2"><label class="form-label fw-bold">เวลา</label><input type="time" id="obsTime" class="form-control"></div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <label class="form-label fw-bold">แผนก</label>
+                <div class="radio-group-box">
+                    <div class="form-check mb-2"><input class="form-check-input" type="radio" name="deptRadio" value="OPD" id="d_opd"><label class="form-check-label" for="d_opd">OPD</label></div>
+                    <div class="form-check mb-2"><input class="form-check-input" type="radio" name="deptRadio" value="IPD" id="d_ipd"><label class="form-check-label" for="d_ipd">IPD</label></div>
+                    <div class="form-check mb-2"><input class="form-check-input" type="radio" name="deptRadio" value="LR" id="d_lr"><label class="form-check-label" for="d_lr">LR</label></div>
+                    <div class="form-check mb-2"><input class="form-check-input" type="radio" name="deptRadio" value="ER" id="d_er"><label class="form-check-label" for="d_er">ER</label></div>
+                    <div class="form-check mb-2"><input class="form-check-input" type="radio" name="deptRadio" value="อื่นๆ" id="d_other" onclick="toggleOther('deptOther', true)"><label class="form-check-label" for="d_other">อื่นๆ</label></div>
+                    <input type="text" id="deptOther" class="form-control form-control-sm other-input" placeholder="ระบุแผนก...">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-bold">วิชาชีพ</label>
+                <div class="radio-group-box">
+                    <div class="form-check mb-2"><input class="form-check-input" type="radio" name="roleRadio" value="แพทย์" id="r_dr"><label class="form-check-label" for="r_dr">แพทย์</label></div>
+                    <div class="form-check mb-2"><input class="form-check-input" type="radio" name="roleRadio" value="พยาบาล" id="r_ns"><label class="form-check-label" for="r_ns">พยาบาล</label></div>
+                    <div class="form-check mb-2"><input class="form-check-input" type="radio" name="roleRadio" value="ผู้ช่วยเหลือคนไข้" id="r_na"><label class="form-check-label" for="r_na">ผู้ช่วยเหลือคนไข้</label></div>
+                    <div class="form-check mb-2"><input class="form-check-input" type="radio" name="roleRadio" value="นักศึกษาพยาบาล" id="r_st"><label class="form-check-label" for="r_st">นักศึกษาพยาบาล</label></div>
+                    <div class="form-check mb-2"><input class="form-check-input" type="radio" name="roleRadio" value="อื่นๆ" id="r_other" onclick="toggleOther('roleOther', true)"><label class="form-check-label" for="r_other">อื่นๆ</label></div>
+                    <input type="text" id="roleOther" class="form-control form-control-sm other-input" placeholder="ระบุวิชาชีพ...">
+                </div>
+            </div>
+            <div class="col-md-6 border-start ps-4">
+                <h6 class="fw-bold">ความพร้อมอุปกรณ์</h6>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-check mb-1"><input class="form-check-input equip" type="checkbox" id="e0"><label class="small">อ่างล้างมือ</label></div>
+                        <div class="form-check mb-1"><input class="form-check-input equip" type="checkbox" id="e1"><label class="small">สบู่เหลว</label></div>
+                        <div class="form-check mb-1"><input class="form-check-input equip" type="checkbox" id="e2"><label class="small">4% Chlorhexidine</label></div>
+                        <div class="form-check mb-1"><input class="form-check-input equip" type="checkbox" id="e3"><label class="small">Alcohol hand rub</label></div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-check mb-1"><input class="form-check-input equip" type="checkbox" id="e4"><label class="small">กระดาษเช็ดมือ</label></div>
+                        <div class="form-check mb-1"><input class="form-check-input equip" type="checkbox" id="e5"><label class="small">โปสเตอร์สอนล้างมือ</label></div>
+                        <div class="form-check mb-1"><input class="form-check-input equip" type="checkbox" id="e6"><label class="small">ถังขยะ</label></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4 border-top pt-3">
+            <h6 class="fw-bold mb-3">การปฏิบัติ 5 Moments</h6>
+            <div id="momentInputList" class="row"></div>
+        </div>
+        <div class="text-end mt-4">
+            <button class="btn btn-outline-secondary me-2" onclick="clearForm()"><i class="fas fa-eraser"></i> ล้างฟอร์ม</button>
+            <button class="btn btn-success px-5" onclick="saveData()"><i class="fas fa-save"></i> บันทึกข้อมูล</button>
+        </div>
+    </div>
 
-<div class="box">
-<h2>3. การสังเกตพฤติกรรมการทำความสะอาดมือ</h2>
-<p><b>ตำแหน่งวิชาชีพ:</b>
-<label><input type="radio" name="job" value="แพทย์">แพทย์</label>
-<label><input type="radio" name="job" value="พยาบาล">พยาบาล</label>
-<label><input type="radio" name="job" value="ผู้ช่วย">ผู้ช่วยเหลือคนไข้</label>
-<label><input type="radio" name="job" value="นศ.พยาบาล">นักศึกษาพยาบาล</label>
-<label><input type="radio" name="job" value="อื่นๆ">อื่นๆ</label>
-</p>
+    <hr class="my-5 no-print">
+    
+    <div class="card p-3 no-print bg-light border">
+        <div class="row align-items-end g-2">
+            <div class="col-md-3">
+                <label class="form-label fw-bold small">รูปแบบการแสดงรายงาน</label>
+                <select class="form-select form-select-sm" id="filterType" onchange="toggleFilterInputs()">
+                    <option value="all">ข้อมูลทั้งหมด</option>
+                    <option value="month">รายเดือน</option>
+                    <option value="year">รายปี</option>
+                    <option value="range">กำหนดช่วงวันที่</option>
+                </select>
+            </div>
+            <div id="monthFilterGroup" class="col-md-2" style="display:none;"><label class="small">เลือกเดือน</label><input type="month" id="filterMonth" class="form-control form-control-sm"></div>
+            <div id="yearFilterGroup" class="col-md-2" style="display:none;"><label class="small">ระบุปี (ค.ศ.)</label><input type="number" id="filterYear" class="form-control form-control-sm" placeholder="2026"></div>
+            <div id="rangeFilterGroupStart" class="col-md-2" style="display:none;"><label class="small">จากวันที่</label><input type="date" id="filterStart" class="form-control form-control-sm"></div>
+            <div id="rangeFilterGroupEnd" class="col-md-2" style="display:none;"><label class="small">ถึงวันที่</label><input type="date" id="filterEnd" class="form-control form-control-sm"></div>
+            <div class="col-md-2"><button class="btn btn-primary btn-sm w-100" onclick="updateReports()"><i class="fas fa-sync-alt"></i> อัปเดตข้อมูล</button></div>
+        </div>
+    </div>
 
-<table>
-<tr><th>ข้อบ่งชี้</th><th>HW</th><th>HR</th><th>ไม่ล้าง</th><th>ใส่ถุงมือ</th></tr>
-<tr><td>1. ก่อนสัมผัสผู้ป่วย</td><td><input type="radio" name="o1" value="HW"></td><td><input type="radio" name="o1" value="HR"></td><td><input type="radio" name="o1" value="NO"></td><td><input type="radio" name="o1" value="G"></td></tr>
-<tr><td>2. ก่อนทำหัตถการปลอดเชื้อ</td><td><input type="radio" name="o2" value="HW"></td><td><input type="radio" name="o2" value="HR"></td><td><input type="radio" name="o2" value="NO"></td><td><input type="radio" name="o2" value="G"></td></tr>
-<tr><td>3. หลังสัมผัสสารคัดหลั่ง</td><td><input type="radio" name="o3" value="HW"></td><td><input type="radio" name="o3" value="HR"></td><td><input type="radio" name="o3" value="NO"></td><td><input type="radio" name="o3" value="G"></td></tr>
-<tr><td>4. หลังสัมผัสผู้ป่วย</td><td><input type="radio" name="o4" value="HW"></td><td><input type="radio" name="o4" value="HR"></td><td><input type="radio" name="o4" value="NO"></td><td><input type="radio" name="o4" value="G"></td></tr>
-<tr><td>5. หลังสัมผัสสิ่งรอบตัวผู้ป่วย</td><td><input type="radio" name="o5" value="HW"></td><td><input type="radio" name="o5" value="HR"></td><td><input type="radio" name="o5" value="NO"></td><td><input type="radio" name="o5" value="G"></td></tr>
-</table>
+    <h5 class="section-title mt-4"><i class="fas fa-chart-pie"></i> แดชบอร์ดสรุปผล</h5>
+    <div class="row g-2 mb-3">
+        <div class="col-md-3"><div class="dash-card"><div class="dash-title">HW Overall</div><div class="dash-value text-primary" id="hw_val">0%</div><div class="dash-fraction" id="hw_frac">(0/0)</div></div></div>
+        <div class="col-md-3"><div class="dash-card"><div class="dash-title">HR Overall</div><div class="dash-value text-info" id="hr_val">0%</div><div class="dash-fraction" id="hr_frac">(0/0)</div></div></div>
+        <div class="col-md-3"><div class="dash-card"><div class="dash-title">Compliance Rate</div><div class="dash-value text-success" id="comp_val">0%</div><div class="dash-fraction" id="comp_frac">(0/0)</div></div></div>
+        <div class="col-md-3"><div class="dash-card"><div class="dash-title">อุปกรณ์พร้อมใช้</div><div class="dash-value text-warning" id="equip_val">0%</div><div class="dash-fraction" id="equip_frac">(0/0)</div></div></div>
+    </div>
 
-<p style="margin-top:15px"><button onclick="processData()">แสดงประมวลผลรายงาน</button></p>
-<div id="output" class="result"></div>
+    <div class="row g-2 mb-3">
+        <div class="col-md-4"><div class="card p-2 h-100"><h6 class="chart-label">สัดส่วนวิธีปฏิบัติภาพรวม</h6><div class="chart-container"><canvas id="pieChart"></canvas></div></div></div>
+        <div class="col-md-4"><div class="card p-2 h-100"><h6 class="chart-label">ความร่วมมือแยกตาม 5 Moments (%)</h6><div class="chart-container"><canvas id="momentChart"></canvas></div></div></div>
+        <div class="col-md-4"><div class="card p-2 h-100"><h6 class="chart-label">Compliance Rate รายแผนก</h6><div class="chart-container"><canvas id="deptChart"></canvas></div></div></div>
+    </div>
+
+    <div class="text-end mb-3 no-print">
+        <button class="btn btn-success btn-sm me-2" onclick="exportToExcel()"><i class="fas fa-file-excel"></i> Export Excel</button>
+        <button class="btn btn-info btn-sm text-white" onclick="window.print()"><i class="fas fa-file-pdf"></i> พิมพ์รายงาน PDF</button>
+    </div>
+
+    <div id="reportArea">
+        <div class="card p-3">
+            <h5 class="section-title">สรุป 5 Moments สำหรับการล้างมือ</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered table-sm text-center align-middle"><thead class="table-light"><tr><th class="text-start">Moment</th><th>HW (%)</th><th>HR (%)</th><th>ไม่ล้าง (%)</th><th>ถุงมือ (%)</th></tr></thead><tbody id="momentTableBody"></tbody></table>
+            </div>
+        </div>
+        <div class="row g-2">
+            <div class="col-md-6"><div class="card p-3"><h5 class="section-title">แยกตามแผนก (%)</h5><table class="table table-bordered table-sm text-center"><thead class="table-light"><tr><th>แผนก</th><th>HW</th><th>HR</th><th>ไม่ล้าง</th><th>ถุงมือ</th></tr></thead><tbody id="deptTableBody"></tbody></table></div></div>
+            <div class="col-md-6"><div class="card p-3"><h5 class="section-title">แยกตามวิชาชีพ (%)</h5><table class="table table-bordered table-sm text-center"><thead class="table-light"><tr><th>วิชาชีพ</th><th>HW</th><th>HR</th><th>ไม่ล้าง</th><th>ถุงมือ</th></tr></thead><tbody id="roleTableBody"></tbody></table></div></div>
+        </div>
+    </div>
 </div>
 
 <script>
-function processData(){
-  let total=5;
-  let hw=0, hr=0, clean=0;
-  for(let i=1;i<=5;i++){
-    let v=document.querySelector('input[name=o'+i+']:checked');
-    if(!v) continue;
-    if(v.value==='HW'){hw++; clean++;}
-    if(v.value==='HR'){hr++; clean++;}
-  }
-  let html=`<h3>ผลการประมวลผล</h3>`;
-  html+=`<p>1. อัตราการทำความสะอาดมือรายโอกาส = ${(clean/total*100).toFixed(1)}%</p>`;
-  html+=`<p>2. อัตราการทำความสะอาดมือภาพรวม = ${(clean/total*100).toFixed(1)}%</p>`;
-  html+=`<p>3. สัดส่วนการทำความสะอาดมือ</p>`;
-  html+=`<ul><li>น้ำและสบู่ (HW): ${hw} ครั้ง</li><li>Alcohol hand rub (HR): ${hr} ครั้ง</li></ul>`;
-  let job=document.querySelector('input[name=job]:checked');
-  if(job) html+=`<p>4. วิชาชีพที่สังเกต: <b>${job.value}</b></p>`;
-  document.getElementById('output').innerHTML=html;
-}
-</script>
+    // --- ตั้งค่าเชื่อมต่อ Apps Script (ใช้ URL ของคุณ) ---
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzBrC7afQChoOR2RrSWUQXoX3B0pSkj-Vrrt0OIUSSd_Ms4YsLzPXUI5lvjm0QohtmD4w/exec"; 
+    
+    let database = [];
+    let charts = {};
+    const momentLabels = ["ก่อนสัมผัสผู้ป่วย", "ก่อนหัตถการปลอดเชื้อ", "หลังสัมผัสสารคัดหลั่ง", "หลังสัมผัสผู้ป่วย", "หลังสัมผัสสิ่งแวดล้อม"];
 
+    window.onload = function() {
+        initMomentInputs();
+        fetchData();
+    };
+
+    function initMomentInputs() {
+        const mDiv = document.getElementById('momentInputList');
+        momentLabels.forEach((label, i) => {
+            mDiv.innerHTML += `<div class="col-md-6 mb-2 border-bottom pb-2"><label class="small fw-bold d-block">${i+1}. ${label}</label>
+                <div class="d-flex gap-3 mt-1">
+                    <div class="form-check"><input class="form-check-input" type="radio" name="m${i}" value="HW" id="m${i}hw"><label class="small" for="m${i}hw">HW</label></div>
+                    <div class="form-check"><input class="form-check-input" type="radio" name="m${i}" value="HR" id="m${i}hr"><label class="small" for="m${i}hr">HR</label></div>
+                    <div class="form-check"><input class="form-check-input" type="radio" name="m${i}" value="None" id="m${i}no"><label class="small" for="m${i}no">ไม่ล้าง</label></div>
+                    <div class="form-check"><input class="form-check-input" type="radio" name="m${i}" value="Glove" id="m${i}gl"><label class="small" for="m${i}gl">ถุงมือ</label></div>
+                </div></div>`;
+        });
+    }
+
+    function fetchData() {
+        fetch(SCRIPT_URL).then(res => res.json()).then(data => {
+            database = data;
+            updateReports();
+        }).catch(err => console.error("Fetch error:", err));
+    }
+
+    function toggleOther(id, show) { document.getElementById(id).style.display = show ? "block" : "none"; }
+    
+    function toggleFilterInputs() {
+        const type = document.getElementById('filterType').value;
+        document.getElementById('monthFilterGroup').style.display = (type === 'month') ? 'block' : 'none';
+        document.getElementById('yearFilterGroup').style.display = (type === 'year') ? 'block' : 'none';
+        document.getElementById('rangeFilterGroupStart').style.display = (type === 'range') ? 'block' : 'none';
+        document.getElementById('rangeFilterGroupEnd').style.display = (type === 'range') ? 'block' : 'none';
+    }
+
+    function clearForm() {
+        document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+        document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+        document.querySelectorAll('.other-input').forEach(i => { i.value = ""; i.style.display = "none"; });
+        document.getElementById('obsDate').value = ""; document.getElementById('obsTime').value = "";
+    }
+
+    function saveData() {
+        const dDate = document.getElementById('obsDate').value;
+        const dTime = document.getElementById('obsTime').value;
+        const dRadio = document.querySelector('input[name="deptRadio"]:checked');
+        const rRadio = document.querySelector('input[name="roleRadio"]:checked');
+
+        if (!dDate || !dTime || !dRadio || !rRadio) return alert("กรุณากรอกข้อมูลให้ครบ");
+        for (let i = 0; i < 5; i++) { if (!document.querySelector(`input[name="m${i}"]:checked`)) return alert(`กรุณาประเมิน Moment ที่ ${i+1}`); }
+
+        let dVal = dRadio.value === "อื่นๆ" ? (document.getElementById('deptOther').value || "อื่นๆ") : dRadio.value;
+        let rVal = rRadio.value === "อื่นๆ" ? (document.getElementById('roleOther').value || "อื่นๆ") : rRadio.value;
+
+        const record = {
+            obsDate: dDate, obsTime: dTime, dept: dVal, role: rVal,
+            m: [0,1,2,3,4].map(i => document.querySelector(`input[name="m${i}"]:checked`).value),
+            equips: Array.from(document.querySelectorAll('.equip')).map(e => e.checked ? 1 : 0)
+        };
+
+        fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(record) });
+        database.push(record);
+        updateReports();
+        alert("บันทึกข้อมูลสำเร็จ");
+        clearForm();
+    }
+
+    function updateReports() {
+        const type = document.getElementById('filterType').value;
+        let filtered = database;
+        if (type === 'month') {
+            const val = document.getElementById('filterMonth').value;
+            if (val) filtered = database.filter(d => d.obsDate && d.obsDate.substring(0, 7) === val);
+        } else if (type === 'year') {
+            const val = document.getElementById('filterYear').value;
+            if (val) filtered = database.filter(d => d.obsDate && d.obsDate.substring(0, 4) === val);
+        } else if (type === 'range') {
+            const start = document.getElementById('filterStart').value;
+            const end = document.getElementById('filterEnd').value;
+            if (start && end) filtered = database.filter(d => { 
+                const dD = d.obsDate.substring(0, 10); 
+                return dD >= start && dD <= end; 
+            });
+        }
+        render(filtered);
+    }
+
+    function render(data) {
+        let n = data.length;
+        if (n === 0) { resetUI(); return; }
+
+        let hw = 0, hr = 0, none = 0, glove = 0, eqCount = 0;
+        data.forEach(d => {
+            d.m.forEach(v => {
+                if(v === 'HW') hw++; else if(v === 'HR') hr++; 
+                else if(v === 'None') none++; else if(v === 'Glove') glove++;
+            });
+            d.equips.forEach(v => eqCount += v);
+        });
+
+        // Update Dashboard
+        const totalMoments = n * 5;
+        const comp = hw + hr;
+        document.getElementById('hw_val').innerText = ((hw / totalMoments) * 100).toFixed(1) + "%";
+        document.getElementById('hw_frac').innerText = `(${hw}/${totalMoments})`;
+        document.getElementById('hr_val').innerText = ((hr / totalMoments) * 100).toFixed(1) + "%";
+        document.getElementById('hr_frac').innerText = `(${hr}/${totalMoments})`;
+        document.getElementById('comp_val').innerText = ((comp / totalMoments) * 100).toFixed(1) + "%";
+        document.getElementById('comp_frac').innerText = `(${comp}/${totalMoments})`;
+        document.getElementById('equip_val').innerText = ((eqCount / (n * 7)) * 100).toFixed(1) + "%";
+        document.getElementById('equip_frac').innerText = `(${eqCount}/${n*7})`;
+
+        // Charts
+        updatePieChart(hw, hr, none, glove);
+        updateMomentChart(data);
+        updateDeptChart(data);
+
+        // Tables
+        renderTables(data);
+    }
+
+    function updatePieChart(hw, hr, none, glove) {
+        if (charts.pie) charts.pie.destroy();
+        charts.pie = new Chart(document.getElementById('pieChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['HW', 'HR', 'ไม่ล้าง', 'ถุงมือ'],
+                datasets: [{ data: [hw, hr, none, glove], backgroundColor: ['#0d6efd', '#0dcaf0', '#dc3545', '#ffc107'] }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    }
+
+    function updateMomentChart(data) {
+        const n = data.length;
+        const compRates = momentLabels.map((_, idx) => {
+            let ok = data.filter(d => d.m[idx] === 'HW' || d.m[idx] === 'HR').length;
+            return ((ok / n) * 100).toFixed(1);
+        });
+        if (charts.moment) charts.moment.destroy();
+        charts.moment = new Chart(document.getElementById('momentChart'), {
+            type: 'bar',
+            data: { labels: ['M1', 'M2', 'M3', 'M4', 'M5'], datasets: [{ label: '% Compliance', data: compRates, backgroundColor: '#198754' }] },
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } }
+        });
+    }
+
+    function updateDeptChart(data) {
+        const depts = [...new Set(data.map(d => d.dept))];
+        const rates = depts.map(dept => {
+            let f = data.filter(d => d.dept === dept);
+            let ok = 0;
+            f.forEach(d => d.m.forEach(v => { if(v==='HW' || v==='HR') ok++; }));
+            return ((ok / (f.length * 5)) * 100).toFixed(1);
+        });
+        if (charts.dept) charts.dept.destroy();
+        charts.dept = new Chart(document.getElementById('deptChart'), {
+            type: 'bar',
+            data: { labels: depts, datasets: [{ label: '% Compliance', data: rates, backgroundColor: '#0d6efd' }] },
+            options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false }
+        });
+    }
+
+    function renderTables(data) {
+        const n = data.length;
+        const fmt = (c, t) => t === 0 ? "0" : `${((c/t)*100).toFixed(1)}% (${c}/${t})`;
+
+        // Moment Table
+        const mBody = document.getElementById('momentTableBody'); mBody.innerHTML = '';
+        momentLabels.forEach((l, idx) => {
+            let s = {HW:0, HR:0, None:0, Glove:0};
+            data.forEach(d => s[d.m[idx]]++);
+            mBody.innerHTML += `<tr><td class="text-start">${l}</td><td>${fmt(s.HW,n)}</td><td>${fmt(s.HR,n)}</td><td>${fmt(s.None,n)}</td><td>${fmt(s.Glove,n)}</td></tr>`;
+        });
+
+        // Dept Table
+        const dBody = document.getElementById('deptTableBody'); dBody.innerHTML = '';
+        [...new Set(data.map(d => d.dept))].forEach(k => {
+            let f = data.filter(d => d.dept === k), s = {HW:0, HR:0, None:0, Glove:0};
+            f.forEach(d => d.m.forEach(v => s[v]++));
+            dBody.innerHTML += `<tr><td>${k}</td><td>${fmt(s.HW,f.length*5)}</td><td>${fmt(s.HR,f.length*5)}</td><td>${fmt(s.None,f.length*5)}</td><td>${fmt(s.Glove,f.length*5)}</td></tr>`;
+        });
+
+        // Role Table
+        const rBody = document.getElementById('roleTableBody'); rBody.innerHTML = '';
+        [...new Set(data.map(d => d.role))].forEach(k => {
+            let f = data.filter(d => d.role === k), s = {HW:0, HR:0, None:0, Glove:0};
+            f.forEach(d => d.m.forEach(v => s[v]++));
+            rBody.innerHTML += `<tr><td>${k}</td><td>${fmt(s.HW,f.length*5)}</td><td>${fmt(s.HR,f.length*5)}</td><td>${fmt(s.None,f.length*5)}</td><td>${fmt(s.Glove,f.length*5)}</td></tr>`;
+        });
+    }
+
+    function resetUI() {
+        ['hw_val','hr_val','comp_val','equip_val'].forEach(id => document.getElementById(id).innerText = "0%");
+        Object.values(charts).forEach(c => c && c.destroy());
+        document.getElementById('momentTableBody').innerHTML = "<tr><td colspan='5'>ไม่พบข้อมูล</td></tr>";
+    }
+
+    function exportToExcel() {
+        if(database.length === 0) return alert("ไม่มีข้อมูล");
+        const ws = XLSX.utils.json_to_sheet(database.map(d => ({
+            "วันที่": d.obsDate, "เวลา": d.obsTime, "แผนก": d.dept, "วิชาชีพ": d.role,
+            "M1": d.m[0], "M2": d.m[1], "M3": d.m[2], "M4": d.m[3], "M5": d.m[4]
+        })));
+        const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Data"); XLSX.writeFile(wb, "IC_Audit_Report.xlsx");
+    }
+</script>
 </body>
 </html>
