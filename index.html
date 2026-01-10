@@ -7,7 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
     <style>
         body { font-family: 'Sarabun', sans-serif; background-color: #f0f2f5; color: #333; }
         .header-banner { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; padding: 30px; border-radius: 0 0 25px 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
@@ -141,7 +141,7 @@
             <div class="col-md-6">
                 <div class="card p-4">
                     <h5 class="section-title">แยกตามแผนก</h5>
-                    <table class="table table-sm table-bordered text-center">
+                    <table class="table table-sm table-bordered text-center align-middle">
                         <thead><tr><th>แผนก</th><th>HW</th><th>HR</th><th>ไม่ล้างมือ</th><th>สวมถุงมือ</th></tr></thead>
                         <tbody id="deptTableBody"></tbody>
                     </table>
@@ -150,7 +150,7 @@
             <div class="col-md-6">
                 <div class="card p-4">
                     <h5 class="section-title">แยกตามวิชาชีพ</h5>
-                    <table class="table table-sm table-bordered text-center">
+                    <table class="table table-sm table-bordered text-center align-middle">
                         <thead><tr><th>วิชาชีพ</th><th>HW</th><th>HR</th><th>ไม่ล้างมือ</th><th>สวมถุงมือ</th></tr></thead>
                         <tbody id="roleTableBody"></tbody>
                     </table>
@@ -181,12 +181,36 @@
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzBrC7afQChoOR2RrSWUQXoX3B0pSkj-Vrrt0OIUSSd_Ms4YsLzPXUI5lvjm0QohtmD4w/exec"; 
     const momentLabels = ["ก่อนสัมผัสผู้ป่วย", "ก่อนทำหัตถการปลอดเชื้อ", "หลังสัมผัสสารคัดหลั่งผู้ป่วย", "หลังสัมผัสผู้ป่วย", "หลังสัมผัสสิ่งรอบตัวผู้ป่วย"];
     let database = [];
 
     window.onload = function() {
+        // Initial setup for Moment Inputs
+        const mDiv = document.getElementById('momentInputList');
+        momentLabels.forEach((label, i) => {
+            mDiv.innerHTML += `
+            <div class="col-md-4">
+                <div class="p-3 border rounded-3 bg-white">
+                    <label class="small fw-bold d-block mb-2 text-dark">${i+1}. ${label}</label>
+                    <div class="d-flex flex-wrap gap-2">
+                        <input type="radio" class="btn-check" name="m${i}" id="m${i}hw" value="HW">
+                        <label class="btn btn-outline-primary btn-sm px-3" for="m${i}hw">HW</label>
+                        <input type="radio" class="btn-check" name="m${i}" id="m${i}hr" value="HR">
+                        <label class="btn btn-outline-info btn-sm px-3" for="m${i}hr">HR</label>
+                        <input type="radio" class="btn-check" name="m${i}" id="m${i}no" value="None">
+                        <label class="btn btn-outline-danger btn-sm px-2" for="m${i}no">ไม่ล้าง</label>
+                        <input type="radio" class="btn-check" name="m${i}" id="m${i}gl" value="Glove">
+                        <label class="btn btn-outline-secondary btn-sm px-2" for="m${i}gl">ถุงมือ</label>
+                    </div>
+                </div>
+            </div>`;
+        });
+
+        // Load Data from Google Sheets
         fetch(SCRIPT_URL)
             .then(res => res.json())
             .then(data => {
@@ -198,27 +222,6 @@
                 render(database);
             });
     };
-
-    // สร้าง Input สำหรับ 5 Moments
-    const mDiv = document.getElementById('momentInputList');
-    momentLabels.forEach((label, i) => {
-        mDiv.innerHTML += `
-        <div class="col-md-4">
-            <div class="p-3 border rounded-3 bg-white">
-                <label class="small fw-bold d-block mb-2 text-dark">${i+1}. ${label}</label>
-                <div class="d-flex flex-wrap gap-2">
-                    <input type="radio" class="btn-check" name="m${i}" id="m${i}hw" value="HW">
-                    <label class="btn btn-outline-primary btn-sm px-3" for="m${i}hw">HW</label>
-                    <input type="radio" class="btn-check" name="m${i}" id="m${i}hr" value="HR">
-                    <label class="btn btn-outline-info btn-sm px-3" for="m${i}hr">HR</label>
-                    <input type="radio" class="btn-check" name="m${i}" id="m${i}no" value="None">
-                    <label class="btn btn-outline-danger btn-sm px-2" for="m${i}no">ไม่ล้าง</label>
-                    <input type="radio" class="btn-check" name="m${i}" id="m${i}gl" value="Glove">
-                    <label class="btn btn-outline-secondary btn-sm px-2" for="m${i}gl">ถุงมือ</label>
-                </div>
-            </div>
-        </div>`;
-    });
 
     function toggleOther(id, show) { document.getElementById(id).style.display = show ? "block" : "none"; }
 
@@ -260,9 +263,21 @@
         clearForm();
     }
 
-    const formatVal = (count, total) => {
+    // ฟังก์ชันจัดรูปแบบการแสดงผล พร้อมเงื่อนไขสี: 0% = แดง, 100% = เขียว
+    const formatVal = (count, total, isInteger = false) => {
         let pct = (total === 0) ? 0 : (count / total) * 100;
-        return `${pct.toFixed(1)}% <br><small class='text-muted'>(${count}/${total})</small>`;
+        
+        let textColor = '#333';
+        if (pct === 0) {
+            textColor = '#dc3545'; // แดง
+        } else if (pct === 100) {
+            textColor = '#198754'; // เขียว
+        }
+
+        let displayPct = isInteger ? pct.toFixed(0) : pct.toFixed(1);
+
+        return `<span style="color: ${textColor}; font-weight: bold;">${displayPct}%</span><br>
+                <small class='text-muted'>(${count}/${total})</small>`;
     };
 
     function render(data) {
@@ -303,7 +318,6 @@
         });
     }
 
-    // ฟังก์ชันที่ปรับปรุงใหม่ตามเงื่อนไขสีและเศษส่วน
     function renderEquipTable(data) {
         const body = document.getElementById('equipDeptTableBody'); 
         body.innerHTML = '';
@@ -312,24 +326,10 @@
         depts.forEach(dn => {
             let f = data.filter(d => d.dept === dn);
             let row = `<tr><td class="fw-bold">${dn}</td>`;
-            
             for(let i=0; i<7; i++) {
                 let count = f.filter(x => x.equips[i] === 1).length;
                 let total = f.length;
-                let pct = (total === 0) ? 0 : (count / total) * 100;
-                
-                // กำหนดสีตามเงื่อนไข: 0%=แดง, 100%=เขียว, อื่นๆ=ดำ
-                let textColor = '#333';
-                if (pct === 0) {
-                    textColor = '#dc3545'; // แดง
-                } else if (pct === 100) {
-                    textColor = '#198754'; // เขียว
-                }
-
-                row += `<td>
-                            <span style="color: ${textColor}; font-weight: bold;">${pct.toFixed(0)}%</span><br>
-                            <small class="text-muted">(${count}/${total})</small>
-                        </td>`;
+                row += `<td>${formatVal(count, total, true)}</td>`;
             }
             body.innerHTML += row + "</tr>";
         });
