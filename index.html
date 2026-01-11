@@ -64,7 +64,7 @@
                 </div>
             </div>
             <div class="col-md-6 border-start ps-4">
-                <label class="form-label fw-bold text-warning">3. ความพร้อมอุปกรณ์สนับสนุนการล้างมือ (Checklist)</label>
+                <label class="form-label fw-bold text-warning">3. ความพร้อมอุปกรณ์สนับสนุนการล้างมือ</label>
                 <div class="row bg-light p-3 rounded-3">
                     <div class="col-6">
                         <div class="form-check mb-2"><input class="form-check-input equip" type="checkbox" id="e0"><label class="small">อ่างล้างมือ</label></div>
@@ -95,25 +95,25 @@
     <div class="row g-3 mb-4">
         <div class="col-md-3">
             <div class="dash-card">
-                <div class="dash-title">Hand Wash (HW)</div>
+                <div class="dash-title">HW</div>
                 <div class="dash-value" id="hw_total">0.0%</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="dash-card">
-                <div class="dash-title">Hand Rub (HR)</div>
+                <div class="dash-title">HR</div>
                 <div class="dash-value" id="hr_total">0.0%</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="dash-card" style="border-bottom-color: #28a745;">
-                <div class="dash-title text-success">Overall Compliance</div>
+                <div class="dash-title text-success">Overall Compliance(HW+HR)</div>
                 <div class="dash-value text-success" id="comp_rate">0.0%</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="dash-card" style="border-bottom-color: #ffc107;">
-                <div class="dash-title text-warning">อุปกรณ์ล้างมือพร้อมใช้</div>
+                <div class="dash-title text-warning">ความพร้อมใช้ของอุปกรณ์สนับสนุนการล้างมือ</div>
                 <div class="dash-value text-warning" id="equip_rate">0.0%</div>
             </div>
         </div>
@@ -167,11 +167,11 @@
                             <th>แผนก</th>
                             <th>อ่างล้างมือ</th>
                             <th>สบู่เหลว</th>
-                            <th>4% CHG</th>
-                            <th>Alcohol Rub</th>
+                            <th>4% Chlorhexidine</th>
+                            <th>Alcohol Hand Rub</th>
                             <th>กระดาษเช็ดมือ</th>
-                            <th>โปสเตอร์</th>
-                            <th>ถังขยะ</th>
+                            <th>โปสเตอร์แสดงวิธีการล้างมือ</th>
+                            <th>ถังขยะใส่กระดาษเช็ดมือ</th>
                         </tr>
                     </thead>
                     <tbody id="equipDeptTableBody"></tbody>
@@ -202,9 +202,9 @@
                         <input type="radio" class="btn-check" name="m${i}" id="m${i}hr" value="HR">
                         <label class="btn btn-outline-info btn-sm px-3" for="m${i}hr">HR</label>
                         <input type="radio" class="btn-check" name="m${i}" id="m${i}no" value="None">
-                        <label class="btn btn-outline-danger btn-sm px-2" for="m${i}no">ไม่ล้าง</label>
+                        <label class="btn btn-outline-danger btn-sm px-2" for="m${i}no">ไม่ล้างมือ</label>
                         <input type="radio" class="btn-check" name="m${i}" id="m${i}gl" value="Glove">
-                        <label class="btn btn-outline-secondary btn-sm px-2" for="m${i}gl">ถุงมือ</label>
+                        <label class="btn btn-outline-secondary btn-sm px-2" for="m${i}gl">สวมถุงมือ</label>
                     </div>
                 </div>
             </div>`;
@@ -341,9 +341,9 @@
             "วันที่": d.obsDate, "เวลา": d.obsTime, "แผนก": d.dept, "วิชาชีพ": d.role,
             "M1": d.m[0], "M2": d.m[1], "M3": d.m[2], "M4": d.m[3], "M5": d.m[4],
             "อุปกรณ์ 1 (อ่างล้างมือ)": d.equips[0], "อุปกรณ์ 2 (สบู่เหลว)": d.equips[1],
-            "อุปกรณ์ 3 (4% CHG)": d.equips[2], "อุปกรณ์ 4 (Alcohol Rub)": d.equips[3],
-            "อุปกรณ์ 5 (กระดาษเช็ดมือ)": d.equips[4], "อุปกรณ์ 6 (โปสเตอร์)": d.equips[5],
-            "อุปกรณ์ 7 (ถังขยะ)": d.equips[6]
+            "อุปกรณ์ 3 (4% Chlorhexidine)": d.equips[2], "อุปกรณ์ 4 (Alcohol Hand Rub)": d.equips[3],
+            "อุปกรณ์ 5 (กระดาษเช็ดมือ)": d.equips[4], "อุปกรณ์ 6 (โปสเตอร์แสดงวิธีการล้างมือ)": d.equips[5],
+            "อุปกรณ์ 7 (ถังขยะใส่กระดาษเช็ดมือ)": d.equips[6]
         })));
         const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "AuditData"); 
         XLSX.writeFile(wb, `IC_HandHygiene_${new Date().toISOString().slice(0,10)}.xlsx`);
