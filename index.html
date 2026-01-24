@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
         body { font-family: 'Sarabun', sans-serif; background-color: #f0f2f5; color: #333; }
@@ -15,7 +16,7 @@
         .section-title { border-left: 6px solid #11998e; padding-left: 15px; margin-bottom: 25px; color: #11998e; font-weight: bold; font-size: 1.2rem; }
         .dash-card { background: white; border-radius: 15px; padding: 25px; text-align: center; border-bottom: 4px solid #11998e; height: 100%; }
         .dash-title { font-size: 0.85rem; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; font-weight: bold; }
-        .dash-value { font-size: 2rem; font-weight: 800; color: #2c3e50; }
+        .dash-value { font-size: 1.5rem; font-weight: 800; color: #2c3e50; }
         .radio-group-box { background: #fafafa; padding: 18px; border-radius: 12px; border: 1px solid #eee; height: 100%; }
         .other-input { display: none; margin-top: 10px; border-color: #11998e; }
         .btn-check:checked + .btn-outline-primary { background-color: #0d6efd; color: white; }
@@ -75,7 +76,7 @@
                     <div class="col-6">
                         <div class="form-check mb-2"><input class="form-check-input equip" type="checkbox" id="e4"><label class="small">กระดาษเช็ดมือ</label></div>
                         <div class="form-check mb-2"><input class="form-check-input equip" type="checkbox" id="e5"><label class="small">โปสเตอร์สอนล้างมือ</label></div>
-                        <div class="form-check mb-2"><input class="form-check-input equip" type="checkbox" id="e6"><label class="small">ถังขยะ</label></div>
+                        <div class="form-check mb-2"><input class="form-check-input equip" type="checkbox" id="e6"><label class="small">ถังขยะทิ้งกระดาษเช็ดมือ</label></div>
                     </div>
                 </div>
             </div>
@@ -93,28 +94,63 @@
     </div>
 
     <div class="row g-3 mb-4">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="dash-card">
-                <div class="dash-title">HW</div>
-                <div class="dash-value" id="hw_total">0.0%</div>
+                <div class="dash-title">สัดส่วนทำความสะอาดมือด้วยน้ำสบู่</div>
+                <div class="dash-value" id="hw_total">0.0% (0/0)</div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="dash-card">
-                <div class="dash-title">HR</div>
-                <div class="dash-value" id="hr_total">0.0%</div>
+                <div class="dash-title">สัดส่วนทำความสะอาดมือด้วยHR</div>
+                <div class="dash-value" id="hr_total">0.0% (0/0)</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="dash-card" style="border-bottom-color: #28a745;">
-                <div class="dash-title text-success">Overall Compliance(HW+HR)</div>
-                <div class="dash-value text-success" id="comp_rate">0.0%</div>
+                <div class="dash-title text-success">อัตราการทำความสะอาดมือภาพรวม</div>
+                <div class="dash-value text-success" id="comp_rate">0.0% (0/0)</div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="dash-card" style="border-bottom-color: #ffc107;">
+                <div class="dash-title text-warning">อุปกรณ์พร้อมใช้</div>
+                <div class="dash-value text-warning" id="equip_rate">0.0% (0/0)</div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="dash-card" style="border-bottom-color: #ffc107;">
-                <div class="dash-title text-warning">ความพร้อมใช้ของอุปกรณ์สนับสนุนการล้างมือ</div>
-                <div class="dash-value text-warning" id="equip_rate">0.0%</div>
+            <div class="dash-card" style="border-bottom-color: #0d6efd;">
+                <div class="dash-title text-primary">สัดส่วนการทำความสะอาดมือ(ครั้ง)</div>
+                <div style="height: 120px;"><canvas id="cleanPieChart"></canvas></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-lg-6">
+            <div class="card p-4 h-100">
+                <h5 class="section-title">อัตราทำความสะอาดมือแต่ละโอกาส 5 Moments (HR+HW) (%)</h5>
+                <div style="height: 350px;"><canvas id="momentChart"></canvas></div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card p-4 h-100">
+                <h5 class="section-title">อัตราการทำความสะอาดมือแต่ละโอกาส แยกราย Moment</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered text-center align-middle" style="font-size: 0.9rem;">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="text-start">Moment</th>
+                                <th class="table-success">HW+HR</th>
+                                <th>HW</th>
+                                <th>HR</th>
+                                <th>ไม่ล้างมือ</th>
+                                <th>สวมถุงมือ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="momentTableBody"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -125,35 +161,45 @@
     </div>
 
     <div id="reportArea">
-        <div class="card p-4">
-            <h5 class="section-title">สรุปตาม 5 Moments</h5>
-            <div class="table-responsive">
-                <table class="table table-hover table-bordered text-center align-middle">
-                    <thead class="table-light">
-                        <tr><th class="text-start">Moment</th><th>HW (%)</th><th>HR (%)</th><th>ไม่ล้างมือ (%)</th><th>สวมถุงมือ (%)</th></tr>
-                    </thead>
-                    <tbody id="momentTableBody"></tbody>
-                </table>
-            </div>
-        </div>
-
         <div class="row">
             <div class="col-md-6">
                 <div class="card p-4">
-                    <h5 class="section-title">แยกตามแผนก</h5>
-                    <table class="table table-sm table-bordered text-center align-middle">
-                        <thead><tr><th>แผนก</th><th>HW(%)</th><th>HR(%)</th><th>ไม่ล้างมือ(%)</th><th>สวมถุงมือ(%)</th></tr></thead>
-                        <tbody id="deptTableBody"></tbody>
-                    </table>
+                    <h5 class="section-title">อัตราการทำความสะอาดมือแยกตามแผนก</h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered text-center align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>แผนก</th>
+                                    <th class="table-success">HW+HR</th>
+                                    <th>HW</th>
+                                    <th>HR</th>
+                                    <th>ไม่ล้างมือ</th>
+                                    <th>สวมถุงมือ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="deptTableBody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="card p-4">
-                    <h5 class="section-title">แยกตามวิชาชีพ</h5>
-                    <table class="table table-sm table-bordered text-center align-middle">
-                        <thead><tr><th>วิชาชีพ</th><th>HW(%)</th><th>HR(%)</th><th>ไม่ล้างมือ(%)</th><th>สวมถุงมือ(%)</th></tr></thead>
-                        <tbody id="roleTableBody"></tbody>
-                    </table>
+                    <h5 class="section-title">อัตราการทำความสะอาดมือแยกตามวิชาชีพ</h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered text-center align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>วิชาชีพ</th>
+                                    <th class="table-success">HW+HR</th>
+                                    <th>HW</th>
+                                    <th>HR</th>
+                                    <th>ไม่ล้างมือ</th>
+                                    <th>สวมถุงมือ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="roleTableBody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -165,13 +211,7 @@
                     <thead class="small table-light">
                         <tr>
                             <th>แผนก</th>
-                            <th>อ่างล้างมือ</th>
-                            <th>สบู่เหลว</th>
-                            <th>4% Chlorhexidine</th>
-                            <th>Alcohol Hand Rub</th>
-                            <th>กระดาษเช็ดมือ</th>
-                            <th>โปสเตอร์แสดงวิธีการล้างมือ</th>
-                            <th>ถังขยะใส่กระดาษเช็ดมือ</th>
+                            <th>อ่างล้างมือ</th><th>สบู่เหลว</th><th>4%CHG</th><th>Alcohol hand rub</th><th>กระดาษเช็ดมือ</th><th>โปสเตอร์</th><th>ถังขยะทิ้งกระดาษเช็ดมือ</th>
                         </tr>
                     </thead>
                     <tbody id="equipDeptTableBody"></tbody>
@@ -187,9 +227,10 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzBrC7afQChoOR2RrSWUQXoX3B0pSkj-Vrrt0OIUSSd_Ms4YsLzPXUI5lvjm0QohtmD4w/exec"; 
     const momentLabels = ["ก่อนสัมผัสผู้ป่วย", "ก่อนทำหัตถการปลอดเชื้อ", "หลังสัมผัสสารคัดหลั่งผู้ป่วย", "หลังสัมผัสผู้ป่วย", "หลังสัมผัสสิ่งรอบตัวผู้ป่วย"];
     let database = [];
+    let momentChart = null;
+    let cleanPieChart = null;
 
     window.onload = function() {
-        // Initial setup for Moment Inputs
         const mDiv = document.getElementById('momentInputList');
         momentLabels.forEach((label, i) => {
             mDiv.innerHTML += `
@@ -197,38 +238,38 @@
                 <div class="p-3 border rounded-3 bg-white">
                     <label class="small fw-bold d-block mb-2 text-dark">${i+1}. ${label}</label>
                     <div class="d-flex flex-wrap gap-2">
-                        <input type="radio" class="btn-check" name="m${i}" id="m${i}hw" value="HW">
-                        <label class="btn btn-outline-primary btn-sm px-3" for="m${i}hw">HW</label>
-                        <input type="radio" class="btn-check" name="m${i}" id="m${i}hr" value="HR">
-                        <label class="btn btn-outline-info btn-sm px-3" for="m${i}hr">HR</label>
-                        <input type="radio" class="btn-check" name="m${i}" id="m${i}no" value="None">
-                        <label class="btn btn-outline-danger btn-sm px-2" for="m${i}no">ไม่ล้างมือ</label>
-                        <input type="radio" class="btn-check" name="m${i}" id="m${i}gl" value="Glove">
-                        <label class="btn btn-outline-secondary btn-sm px-2" for="m${i}gl">สวมถุงมือ</label>
+                        <input type="radio" class="btn-check" name="m${i}" id="m${i}hw" value="HW"><label class="btn btn-outline-primary btn-sm px-3" for="m${i}hw">HW</label>
+                        <input type="radio" class="btn-check" name="m${i}" id="m${i}hr" value="HR"><label class="btn btn-outline-info btn-sm px-3" for="m${i}hr">HR</label>
+                        <input type="radio" class="btn-check" name="m${i}" id="m${i}no" value="None"><label class="btn btn-outline-danger btn-sm px-2" for="m${i}no">ไม่ล้างมือ</label>
+                        <input type="radio" class="btn-check" name="m${i}" id="m${i}gl" value="Glove"><label class="btn btn-outline-secondary btn-sm px-2" for="m${i}gl">สวมถุงมือ</label>
                     </div>
                 </div>
             </div>`;
         });
-
-        // Load Data from Google Sheets
-        fetch(SCRIPT_URL)
-            .then(res => res.json())
-            .then(data => {
-                database = data;
-                render(database);
-            })
-            .catch(err => {
-                console.log("Fetch Error / Local Mode");
-                render(database);
-            });
+        initCharts();
+        fetch(SCRIPT_URL).then(res => res.json()).then(data => { database = data; render(database); }).catch(err => render(database));
     };
 
-    function toggleOther(id, show) { document.getElementById(id).style.display = show ? "block" : "none"; }
+    function initCharts() {
+        const ctxBar = document.getElementById('momentChart').getContext('2d');
+        momentChart = new Chart(ctxBar, {
+            type: 'bar',
+            data: { labels: ["M1", "M2", "M3", "M4", "M5"], datasets: [{ label: 'HW+HR (%)', data: [0,0,0,0,0], backgroundColor: '#11998e', borderRadius: 5 }] },
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } }, plugins: { legend: { display: false } } }
+        });
 
-    function clearForm() {
-        document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
-        document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
-        document.querySelectorAll('.other-input').forEach(i => { i.value = ""; i.style.display = "none"; });
+        const ctxPie = document.getElementById('cleanPieChart').getContext('2d');
+        cleanPieChart = new Chart(ctxPie, {
+            type: 'pie',
+            data: { labels: ['HW', 'HR', 'ไม่ล้างมือ', 'สวมถุงมือ'], datasets: [{ data: [0, 0, 0, 0], backgroundColor: ['#0d6efd', '#0dcaf0', '#dc3545', '#6c757d'] }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 9 } } } } }
+        });
+    }
+
+    function toggleOther(id, show) { document.getElementById(id).style.display = show ? "block" : "none"; }
+    function clearForm() { 
+        document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false); 
+        document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false); 
         document.getElementById('obsDate').value = ""; document.getElementById('obsTime').value = "";
     }
 
@@ -237,69 +278,77 @@
         const dTime = document.getElementById('obsTime').value;
         const dRadio = document.querySelector('input[name="deptRadio"]:checked');
         const rRadio = document.querySelector('input[name="roleRadio"]:checked');
-
         if (!dDate || !dTime || !dRadio || !rRadio) return alert("กรุณากรอกข้อมูลให้ครบ");
-        for (let i = 0; i < 5; i++) { 
-            if (!document.querySelector(`input[name="m${i}"]:checked`)) {
-                return alert(`กรุณาประเมิน Moment ที่ ${i+1}`); 
-            }
-        }
-
-        if (!confirm("คุณต้องการบันทึกข้อมูลนี้ลงในระบบใช่หรือไม่?")) return; 
-
+        
         let dVal = dRadio.value === "อื่นๆ" ? (document.getElementById('deptOther').value || "อื่นๆ") : dRadio.value;
         let rVal = rRadio.value === "อื่นๆ" ? (document.getElementById('roleOther').value || "อื่นๆ") : rRadio.value;
+        
+        // แก้ไข: ส่งค่าว่าง "" แทนคำว่า "Pending" เพื่อไม่ให้แสดงในฐานข้อมูล
+        const moments = [0,1,2,3,4].map(i => {
+            const el = document.querySelector(`input[name="m${i}"]:checked`);
+            return el ? el.value : ""; 
+        });
 
-        const record = {
-            obsDate: dDate, obsTime: dTime, dept: dVal, role: rVal,
-            m: [0,1,2,3,4].map(i => document.querySelector(`input[name="m${i}"]:checked`).value),
-            equips: Array.from(document.querySelectorAll('.equip')).map(e => e.checked ? 1 : 0)
-        };
-
+        const record = { obsDate: dDate, obsTime: dTime, dept: dVal, role: rVal, m: moments, equips: Array.from(document.querySelectorAll('.equip')).map(e => e.checked ? 1 : 0) };
         fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(record) });
-        database.push(record);
-        render(database);
-        alert("บันทึกข้อมูลเรียบร้อยแล้ว"); 
-        clearForm();
+        database.push(record); render(database); alert("บันทึกข้อมูลเรียบร้อยแล้ว"); clearForm();
     }
 
-    // ฟังก์ชันจัดรูปแบบการแสดงผล พร้อมเงื่อนไขสี: 0% = แดง, 100% = เขียว
     const formatVal = (count, total, isInteger = false) => {
         let pct = (total === 0) ? 0 : (count / total) * 100;
-        
-        let textColor = '#333';
-        if (pct === 0) {
-            textColor = '#dc3545'; // แดง
-        } else if (pct === 100) {
-            textColor = '#198754'; // เขียว
-        }
-
+        let textColor = pct === 0 ? '#dc3545' : (pct === 100 ? '#198754' : '#333');
         let displayPct = isInteger ? pct.toFixed(0) : pct.toFixed(1);
-
-        return `<span style="color: ${textColor}; font-weight: bold;">${displayPct}%</span><br>
-                <small class='text-muted'>(${count}/${total})</small>`;
+        return `<span style="color: ${textColor}; font-weight: bold;">${displayPct}%</span><br><small class='text-muted'>(${count}/${total})</small>`;
     };
 
     function render(data) {
-        let n = data.length;
-        if(n === 0) return;
+        let n_records = data.length; if(n_records === 0) return;
 
-        let hw = 0, hr = 0, eq = 0;
+        let hw = 0, hr = 0, none = 0, glove = 0, eq = 0;
+        let totalOpp = 0;
+        let mComp = [0,0,0,0,0];
+        let mTotal = [0,0,0,0,0];
+
         data.forEach(d => {
-            d.m.forEach(v => { if(v==='HW') hw++; if(v==='HR') hr++; });
+            d.m.forEach((v, idx) => { 
+                // แก้ไข Logic: ข้ามทั้ง Pending และช่องว่าง ไม่ให้นับเป็นตัวหาร
+                if (v && v !== "Pending" && v !== "") {
+                    totalOpp++;
+                    mTotal[idx]++;
+                    if(v==='HW') { hw++; mComp[idx]++; }
+                    else if(v==='HR') { hr++; mComp[idx]++; }
+                    else if(v==='None') none++;
+                    else if(v==='Glove') glove++;
+                }
+            });
             d.equips.forEach(v => eq += v);
         });
 
-        document.getElementById('hw_total').innerText = ((hw / (n * 5)) * 100).toFixed(1) + "%";
-        document.getElementById('hr_total').innerText = ((hr / (n * 5)) * 100).toFixed(1) + "%";
-        document.getElementById('comp_rate').innerText = (((hw + hr) / (n * 5)) * 100).toFixed(1) + "%";
-        document.getElementById('equip_rate').innerText = ((eq / (n * 7)) * 100).toFixed(1) + "%";
+        const totalHWHR = hw + hr;
+
+        document.getElementById('hw_total').innerText = (totalHWHR > 0 ? ((hw / totalHWHR) * 100).toFixed(1) : "0.0") + `% (${hw}/${totalHWHR})`;
+        document.getElementById('hr_total').innerText = (totalHWHR > 0 ? ((hr / totalHWHR) * 100).toFixed(1) : "0.0") + `% (${hr}/${totalHWHR})`;
+        document.getElementById('comp_rate').innerText = (totalOpp > 0 ? ((totalHWHR / totalOpp) * 100).toFixed(1) : "0.0") + `% (${totalHWHR}/${totalOpp})`;
+        document.getElementById('equip_rate').innerText = ((eq / (n_records * 7)) * 100).toFixed(1) + `% (${eq}/${n_records * 7})`;
+
+        momentChart.data.datasets[0].data = mComp.map((c, i) => mTotal[i] > 0 ? ((c / mTotal[i]) * 100).toFixed(1) : 0);
+        momentChart.update();
+        cleanPieChart.data.datasets[0].data = [hw, hr, none, glove];
+        cleanPieChart.update();
 
         const mBody = document.getElementById('momentTableBody'); mBody.innerHTML = '';
         momentLabels.forEach((l, idx) => {
             let s = {HW:0, HR:0, None:0, Glove:0};
-            data.forEach(d => s[d.m[idx]]++);
-            mBody.innerHTML += `<tr><td class="text-start fw-bold">${l}</td><td>${formatVal(s.HW, n)}</td><td>${formatVal(s.HR, n)}</td><td>${formatVal(s.None, n)}</td><td>${formatVal(s.Glove, n)}</td></tr>`;
+            data.forEach(d => { if(d.m[idx] && d.m[idx] !== "Pending" && d.m[idx] !== "") s[d.m[idx]]++; });
+            let totalM = s.HW + s.HR + s.None + s.Glove;
+            mBody.innerHTML += `<tr>
+                <td class="text-start fw-bold">${l}</td>
+                <td class="table-success fw-bold">${formatVal(s.HW + s.HR, totalM)}</td>
+                <td>${formatVal(s.HW, totalM)}</td>
+                <td>${formatVal(s.HR, totalM)}</td>
+                <td>${formatVal(s.None, totalM)}</td>
+                <td>${formatVal(s.Glove, totalM)}</td>
+            </tr>`;
         });
 
         renderTable(data, 'dept', 'deptTableBody');
@@ -313,40 +362,37 @@
         keys.forEach(k => {
             let f = data.filter(d => d[field] === k);
             let s = {HW:0, HR:0, None:0, Glove:0};
-            f.forEach(d => d.m.forEach(v => s[v]++));
-            body.innerHTML += `<tr><td>${k}</td><td>${formatVal(s.HW, f.length*5)}</td><td>${formatVal(s.HR, f.length*5)}</td><td>${formatVal(s.None, f.length*5)}</td><td>${formatVal(s.Glove, f.length*5)}</td></tr>`;
+            f.forEach(d => d.m.forEach(v => {
+                if(v && v !== "Pending" && v !== "" && s[v] !== undefined) s[v]++;
+            }));
+            let total = s.HW + s.HR + s.None + s.Glove;
+            body.innerHTML += `<tr>
+                <td>${k}</td>
+                <td class="table-success fw-bold">${formatVal(s.HW+s.HR, total)}</td>
+                <td>${formatVal(s.HW, total)}</td>
+                <td>${formatVal(s.HR, total)}</td>
+                <td>${formatVal(s.None, total)}</td>
+                <td>${formatVal(s.Glove, total)}</td>
+            </tr>`;
         });
     }
 
     function renderEquipTable(data) {
-        const body = document.getElementById('equipDeptTableBody'); 
-        body.innerHTML = '';
+        const body = document.getElementById('equipDeptTableBody'); body.innerHTML = '';
         const depts = [...new Set(data.map(d => d.dept))];
-        
         depts.forEach(dn => {
             let f = data.filter(d => d.dept === dn);
             let row = `<tr><td class="fw-bold">${dn}</td>`;
-            for(let i=0; i<7; i++) {
-                let count = f.filter(x => x.equips[i] === 1).length;
-                let total = f.length;
-                row += `<td>${formatVal(count, total, true)}</td>`;
-            }
+            for(let i=0; i<7; i++) row += `<td>${formatVal(f.filter(x => x.equips[i] === 1).length, f.length, true)}</td>`;
             body.innerHTML += row + "</tr>";
         });
     }
 
     function exportToExcel() {
-        if(database.length === 0) return alert("ไม่มีข้อมูลสำหรับการส่งออก");
-        const ws = XLSX.utils.json_to_sheet(database.map(d => ({
-            "วันที่": d.obsDate, "เวลา": d.obsTime, "แผนก": d.dept, "วิชาชีพ": d.role,
-            "M1": d.m[0], "M2": d.m[1], "M3": d.m[2], "M4": d.m[3], "M5": d.m[4],
-            "อุปกรณ์ 1 (อ่างล้างมือ)": d.equips[0], "อุปกรณ์ 2 (สบู่เหลว)": d.equips[1],
-            "อุปกรณ์ 3 (4% Chlorhexidine)": d.equips[2], "อุปกรณ์ 4 (Alcohol Hand Rub)": d.equips[3],
-            "อุปกรณ์ 5 (กระดาษเช็ดมือ)": d.equips[4], "อุปกรณ์ 6 (โปสเตอร์แสดงวิธีการล้างมือ)": d.equips[5],
-            "อุปกรณ์ 7 (ถังขยะใส่กระดาษเช็ดมือ)": d.equips[6]
-        })));
-        const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "AuditData"); 
-        XLSX.writeFile(wb, `IC_HandHygiene_${new Date().toISOString().slice(0,10)}.xlsx`);
+        if(database.length === 0) return alert("ไม่มีข้อมูล");
+        const ws = XLSX.utils.json_to_sheet(database.map(d => ({ "วันที่": d.obsDate, "แผนก": d.dept, "วิชาชีพ": d.role, "M1": d.m[0], "M2": d.m[1], "M3": d.m[2], "M4": d.m[3], "M5": d.m[4] })));
+        const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "AuditData");
+        XLSX.writeFile(wb, `IC_Audit_${new Date().toISOString().slice(0,10)}.xlsx`);
     }
 </script>
 </body>
